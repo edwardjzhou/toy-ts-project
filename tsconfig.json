@@ -1,0 +1,10 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 16",
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "esnext",
+        "strict": true,
+        "esModuleInterop": true,
+    }
+}
