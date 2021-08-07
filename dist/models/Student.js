@@ -1,5 +1,6 @@
 "use strict";
-const Mark = require("./Mark");
+Object.defineProperty(exports, "__esModule", { value: true });
+// import AbstractController from "../abstracts/Controller"
 class Student {
     constructor(id, name) {
         this.id = Number(id);
@@ -8,4 +9,4 @@ class Student {
         this.courses = [];
     }
 }
-module.exports = Student;
+exports.default = Student;

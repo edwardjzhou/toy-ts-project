@@ -1,6 +1,7 @@
-const Mark = require("./Mark");
+import Mark from "./Mark";
+// import AbstractController from "../abstracts/Controller"
 
-class Student {
+export default class Student {
   id;
   name;
 
@@ -24,4 +25,3 @@ class Student {
   
 }
 
-module.exports = Student;

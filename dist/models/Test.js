@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const Course = require("./Course");
 class Test {
     constructor(id, course_id, weight) {
@@ -27,4 +28,6 @@ class Test {
         return true;
     }
 }
-module.exports = Test;
+exports.default = Test;
+// type hey<T> = T extends string ? string : number
+// let hi: hey<string>  =  'hey'

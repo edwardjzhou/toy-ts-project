@@ -1,4 +1,4 @@
-class Course {
+export default class Course {
   id;
   name;
   teacher;
@@ -11,5 +11,3 @@ class Course {
     this.teacher = teacher;
   }
 }
-
-module.exports = Course;

@@ -1,5 +1,10 @@
 "use strict";
-const Test = require('./Test'), Student = require('./student'), Course = require('./Course');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Test_1 = __importDefault(require("./Test"));
+const Student_1 = __importDefault(require("./Student"));
 class Mark {
     constructor(test_id, student_id, mark) {
         this.test_id = Number(test_id);
@@ -13,12 +18,12 @@ class Mark {
     }
     // a mark belongs to one test
     get test() {
-        this._test ||= Test.indexToRowMap.get(this.test_id);
+        this._test ||= Test_1.default.indexToRowMap.get(this.test_id);
         return this._test;
     }
     // a mark belongs to one student
     get student() {
-        this._student ||= Student.indexToRowMap.get(this.student_id);
+        this._student ||= Student_1.default.indexToRowMap.get(this.student_id);
         return this._student;
     }
     // a test belongs to one course
@@ -33,12 +38,12 @@ class Mark {
         else {
             this.student;
         }
-        ww;
         return this._course;
     }
     get weightedMark() {
         this._weightedMark ||= this.test.weight * this.mark;
+        // Math.round(num * 100) / 100
         return this._weightedMark;
     }
 }
-module.exports = Mark;
+exports.default = Mark;

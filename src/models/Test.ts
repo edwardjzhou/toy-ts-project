@@ -1,11 +1,15 @@
 const Course = require("./Course");
 
-class Test {
+interface TestSchema {
+
+}
+
+export default class Test implements TestSchema {
   id;
   course_id;
   weight;
 
-  // join column
+  // join columns
   _course;
   static indexToRowMap;
 
@@ -36,4 +40,10 @@ class Test {
   }
 }
 
-module.exports = Test;
+
+
+
+
+// type hey<T> = T extends string ? string : number
+
+// let hi: hey<string>  =  'hey'
