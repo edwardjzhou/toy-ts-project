@@ -10,11 +10,11 @@
 
 
 import fs from 'fs';
-import CsvTable from './abstracts/CsvTable';
-import Course from './models/Course';
-import Student from './models/Student';
-import Test from './models/Test';
-import Mark from './models/Mark';
+import CsvTable from '../Parsing/CsvTable';
+import Course from './Course';
+import Student from './Student';
+import Test from './Test';
+import Mark from './Mark';
 
 
 type Ctor<T> = new (...args:any[]) => T;

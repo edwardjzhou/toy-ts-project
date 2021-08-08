@@ -1,0 +1,28 @@
+// syntax of my files
+the abstract idea of "DATA" is what I call a RECORD 
+the RECORD in JS form is an OBJECT like { ...column keys: record values, ...custom keys: derived values/joins } 
+    *  ex: new Course() and it may have a course.tests custom key
+the RECORD in SQL form is a ROW in a TABLE
+
+
+
+// DB side:
+// TABLE has ROWS of RECORDS
+
+// CSV side: 
+// .csv file has /n separated STRINGS of RECORDS
+
+// on CODE side:
+// MODEL (for each table)
+// connects a db's TABLE to JS
+// SHOULD ACTIVELY SANITIZE A RECORD, TYPE A RECORD, AND ADD CUSTOM COLUMNS OR OTHER SQL ops; BUT PERFORM NO OTHER LOGIC
+// it also creates the join table relations with has_many belongs_to
+// other viewpoint is that the TREND is to have fat models with more custom methods? skinny controllers
+// activeRecord is abstraction for migrating (insert update set)
+
+// SCHEMA is all tables FROM a db; or all models post object-ifying them? or during migration?
+// SCHEMA = course schema + mark schema + ... 
+
+// CONTROLLER 
+// wrangles things for the view by having all the methods like class User {index () => User.all} 
+or in our case prepares everything for the JSON view

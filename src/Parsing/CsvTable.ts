@@ -1,17 +1,30 @@
 import fs from 'fs';
+// aka a Model or the object representation of a row from a table, adhering to its schema, in a queryable way
 
-class Parser {
-    isReadyPromise;
-    isReadyPromiseResolver;
-    rawData;
-}
+// interface PrimaryKey {
+//     id: number
+// }
 
-class Table<Model> {
-    headers: string[];
-    rows:;
-}
+// // interface Queryable<T> extends PrimaryKey {
+// //     [P in keyof T]: ForeignKeys[P]
+// // }
 
-export default class ReadableTable<Model> extends Table<Model>, Readable<CsvFileFormat> {
+
+// abstract class Row implements Queryable {}
+
+// class Parser<RowData<FileFormat>> {
+//     isReadyPromise;
+//     isReadyPromiseResolver;
+//     rawData: RowData;
+// }
+
+// class Table<Model<Schema> extends Controller> {
+//     headers: string[];
+//     rows:;
+// }
+
+
+export default class ParsedTable<Model> extends Table<Model>, Readable<Csv> {
 
     rowObjs;
     path;

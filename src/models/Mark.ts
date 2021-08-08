@@ -2,20 +2,25 @@ import Test from './Test';
 import Student from './Student';
 import Course from './Course';
 
-interface MarkForeignKeys {
-    test_id;
-    student_id;
-}
+// interface MarkForeignKeys {
+//     test_id;
+//     student_id;
+// }
 
-interface MarkDerived {
-    weightedMark;
-}
-
-
+// type MarkDerived<T> = {
+//     [P in keyof T as `_${P}`]: T[P];
+// }
 
 
+// type Split<S extends string, D extends string> =
+//     string extends S ? string[] :
+//         S extends '' ? [] :
+//             S extends `${infer T}${D}${infer U}` ?  [T, ...Split<U, D>] :  [S];
+// type test = Split<'student_id', `_id`>
 
-export default class Mark implements MarkForeignKeys {
+type ForeignKeyField<S extends string> = S extends `${infer T}_id` ?  T : never;
+
+export default class Mark {
     test_id: number;
     student_id: number;
     mark: number;
@@ -24,7 +29,7 @@ export default class Mark implements MarkForeignKeys {
     // joins
     private _test;
     private _student;
-    private _course;
+    // private _course;
     // derived
     private _weightedMark;
 

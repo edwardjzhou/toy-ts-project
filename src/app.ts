@@ -13,7 +13,9 @@
 
 class App {  
   parse(){}
-  validate(){}
+  validate(){
+    // runs model validations here
+  }
   calculateDerivedValues(){}
   outputToJson(){
     let result;
