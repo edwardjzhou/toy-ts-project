@@ -1,6 +1,7 @@
+https://en.wikipedia.org/wiki/Record_(computer_science)
 // syntax of my files
 the abstract idea of "DATA" is what I call a RECORD 
-the RECORD in JS form is an OBJECT like { ...column keys: record values, ...custom keys: derived values/joins } 
+the RECORD in JS form is an OBJECT like { ...column keys(fields): record values, ...custom keys: derived values/joins } 
     *  ex: new Course() and it may have a course.tests custom key
 the RECORD in SQL form is a ROW in a TABLE
 

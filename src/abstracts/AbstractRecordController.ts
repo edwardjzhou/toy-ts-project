@@ -2,6 +2,9 @@ export default abstract class Controller {
     // aka show, findOne
     static findById(){}
 
+    create(){}
+    
+    // 1.create objs 2. run query 3.format for json 
     createView(){}
 
     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html
