@@ -51,7 +51,8 @@
 
 
 
-
+SELECT  
+FROM courses
 
 SELECT students.id, students.name, AVG() as totalAverage, as courses
 FROM students

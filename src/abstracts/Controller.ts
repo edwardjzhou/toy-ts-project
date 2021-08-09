@@ -1,8 +1,14 @@
-export default abstract class Controller {
+
+export default abstract class Controller<T extends Model> {
+    constructor(cls: typeof Model){
+        
+        if (cls.id) {
+        }
+    }
     // aka show, findOne
     static findById(){}
 
-    create(){}
+    createFromImport(){}
     
     // 1.create objs 2. run query 3.format for json 
     createView(){}
@@ -32,3 +38,4 @@ export default abstract class Controller {
 
 }
 
+let c = new Controller<MyModel>(MyModel);
