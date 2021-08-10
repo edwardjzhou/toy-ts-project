@@ -1,10 +1,5 @@
+// TABLES: 
 
-// type Split<S extends string, D extends string> =
-//     string extends S ? string[] :
-//         S extends '' ? [] :
-//             S extends `${infer T}${D}${infer U}` ?  [T, ...Split<U, D>] :  [S];
-
-// tables: 
 // Marks
 // test_id,student_id,mark
 // 1,1,78
@@ -39,7 +34,7 @@
 // 2,B
 // 3,C
 
-// Tests
+// Tests belongs_to course
 // id,course_id,weight
 // 1,1,10
 // 2,1,40
@@ -51,7 +46,8 @@
 
 
 
-SELECT  
+
+SELECT 
 FROM courses
 
 SELECT students.id, students.name, AVG() as totalAverage, as courses

@@ -17,6 +17,26 @@ import Test from './Test';
 import Mark from './Mark';
 
 
+
+function base<T>() {
+  class Base {
+    static prop: T;
+  }
+  return Base;
+}
+ 
+function derived<T>() {
+  class Derived extends base<T>() {
+    static anotherProp: T;
+  }
+  return Derived;
+}
+ 
+class Spec extends derived<string>() {}
+ 
+Spec.prop; // string
+Spec.anotherProp; // string
+
 type Ctor<T> = new (...args:any[]) => T;
 type ModelCtor = Ctor<Course> | Ctor<Student> | Ctor<Test> | Ctor<Mark>
 type TableDescription = [string, ModelCtor];
@@ -47,4 +67,10 @@ class AppSchema {
       console.log(loadedTable)
     }
   }
+}
+
+
+
+function createSchema(): Animal[] {
+  return [new Rhino(), new Elephant(), new Snake()];
 }

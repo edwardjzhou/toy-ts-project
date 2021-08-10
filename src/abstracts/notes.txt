@@ -27,3 +27,7 @@ the RECORD in SQL form is a ROW in a TABLE
 // CONTROLLER 
 // wrangles things for the view by having all the methods like class User {index () => User.all} 
 or in our case prepares everything for the JSON view
+
+
+https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch
+
