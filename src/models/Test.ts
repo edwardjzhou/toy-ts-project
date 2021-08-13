@@ -1,15 +1,28 @@
 const Course = require("./Course");
 
-interface TestSchema {
-
+interface TestTableSchema {
+  id;
+  course_id;
+  weight;
 }
+
+interface TestJoins {
+  _course; // belongs to a course
+  _marks; // has many marks belonging to myriad students
+  // functions to make the joins? Test.marks(a student)
+  // makeIndexRowmap
+}
+interface TestValidation {
+  validateTestWeights;
+}
+
+interface TestSchema extends TestTableSchema, TestJoins, TestValidation {}
 
 export default class Test implements TestSchema {
   id;
   course_id;
   weight;
 
-  // join columns
   _course;
   static indexToRowMap;
 
@@ -39,11 +52,3 @@ export default class Test implements TestSchema {
     return true;
   }
 }
-
-
-
-
-
-// type hey<T> = T extends string ? string : number
-
-// let hi: hey<string>  =  'hey'

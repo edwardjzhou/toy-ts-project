@@ -7,20 +7,14 @@
  * tsc src/* --outDir dist --allowJs
  * node '/Users/edward/Desktop/hatchways_fullstack/dist/app.js' courses.csv students.csv tests.csv marks.csv output.json
 */
-
-
-
-
 class App {  
   parse(){}
-  validate(){
-    // runs model validations here
-  }
-  calculateDerivedValues(){}
+  validate(){}
+  runController(){}
   outputToJson(){
-    let result;
-    const areTestWeightsValid = Test.validateTestWeights(this.tests);
-    console.log(Student, this.students)
+    // let result;
+    // const areTestWeightsValid = Test.validateTestWeights(this.tests);
+    // console.log(Student, this.students)
     return
 
     if (areTestWeightsValid === false) {

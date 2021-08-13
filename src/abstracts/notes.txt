@@ -31,3 +31,43 @@ or in our case prepares everything for the JSON view
 
 https://en.wikipedia.org/wiki/Object%E2%80%93relational_impedance_mismatch
 
+
+
+using function f(){}
+(0, f)(params) to lose context of this intentionally
+remember to use void 0 void iifes
+
+conditional spreads
+function copyOwner(pet?: Animal) {
+    return {
+        ...(pet?.owner),
+        otherStuff: 123
+    }
+}
+
+generics in constraints T extends string, U extends keyof T etc can constrain EACH OTHER
+can also providd def arg like type asdf<T = string> = T exte...
+as const arrays to tuples 
+
+X extends Y means (Y is assignable to X) but not necesarily othe rway around
+
+
+
+type asdf <T>{
+    [P in keyof T]: T[P] extends {231:23} ? never : T[P]
+}[keyof T]
+
+to get keys after mapping; removes any nevered out ones in conditional mappings
+
+
+function removeProp(dog: Dog): Omit<Dog, 'age'> { 
+ const newDog = { ...dog } as Partial<Dog>; 
+ delete newDog.age; 
+ return newDog as Omit<Dog,'age'>; 
+} 
+ 
+type Dog = { 
+ age: number; 
+ color: string; 
+ name: string; 
+} 
