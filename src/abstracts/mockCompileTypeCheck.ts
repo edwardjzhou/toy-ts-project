@@ -1,11 +1,12 @@
-// TABLES: 
-
-import { or } from "../../usefulTypes"
-import Student from "../models/Student"
-import Test from "../models/Test"
+//  SQL NOTES
 // FILTER (WHERE course_id=3)
+// ROUND()
+// join decomposition = many small querys
 
-ROUND()
+// STUFF()
+// SELECT STUFF('abcdefg',2, 3, 'NEW');
+// --starting with the 2nd character, delete 3 chars and stick NEW there
+
 
 SELECT * 
 FROM (VALUES (1,2), (3,4)) as asdf
@@ -15,7 +16,14 @@ FROM "fmlfmlfml/asdf".students as students,
 "fmlfmlfml/asdf".marks as marks,
 
 
-// Marks
+WITH t AS (
+    SELECT 1 n, 1 g, 1 v
+) SELECT * FROM t
+
+n	g	v
+1	1	1
+
+// Marks (19 ct.)
 // belongs_to_one TEST (FK), belongs_to_one STUDENT (FK)
 // test_id,student_id,mark
 // 1,1,78
@@ -37,7 +45,6 @@ FROM "fmlfmlfml/asdf".students as students,
 // 5,3,65
 // 6,3,78
 // 7,3,40
-// join decomposition = many small querys
 
 // Courses
 // has_many TESTS (PK)
@@ -72,8 +79,7 @@ FROM "fmlfmlfml/asdf".students as students,
 
 
 // VALIDATION THAT EVERY COURSE HAS TESTS THAT SUM(WEIGHT) = 100
---SELECT COUNT(c.*) = (SELECT COUNT(*) FROM "fmlfmlfml/asdf".courses AS cc)
-SELECT COUNT(c.*)
+SELECT COUNT(c.*) = (SELECT COUNT(*) FROM "fmlfmlfml/asdf".courses)
 FROM "fmlfmlfml/asdf".courses AS c
 JOIN (
         SELECT t.course_id
@@ -82,28 +88,30 @@ JOIN (
         HAVING SUM(t.weight) = 100
     ) as RESULT 
     ON c.id = RESULT.course_id 
+//OR
+SELECT COUNT(c.*) = (SELECT COUNT(*) FROM "fmlfmlfml/asdf".courses)
+FROM "fmlfmlfml/asdf".courses AS c
+WHERE (
+        SELECT SUM(t.weight)
+        FROM "fmlfmlfml/asdf".tests AS t
+        WHERE t.course_id = c.id
+    ) = 100
 
-
-
-SELECT *
-FROM "fmlfmlfml/asdf".courses AS courses
-JOIN "fmlfmlfml/asdf".tests AS tests ON courses.id = tests.course_id
-JOIN "fmlfmlfml/asdf".marks AS marks ON tests.id = marks.test_id
-JOIN "fmlfmlfml/asdf".students AS students ON marks.student_id = students.id
 
 // JOINS TABLE
-//   FROM "fmlfmlfml/asdf".courses AS courses
-//   JOIN "fmlfmlfml/asdf".tests AS tests ON courses.id = tests.course_id
-//   JOIN "fmlfmlfml/asdf".marks AS marks ON tests.id = marks.test_id
-//   JOIN "fmlfmlfml/asdf".students AS students ON marks.student_id = students.id
+  FROM "fmlfmlfml/asdf".courses AS courses
+  JOIN "fmlfmlfml/asdf".tests AS tests ON courses.id = tests.course_id
+  JOIN "fmlfmlfml/asdf".marks AS marks ON tests.id = marks.test_id
+  JOIN "fmlfmlfml/asdf".students AS students ON marks.student_id = students.id
 
-Student.courses (S: Student)
+  // FIND UNIQUE COURSES A STUDENT IS ENROLLED IN
+Student.courses = (S: Student): Course[]
   SELECT DISTINCT courses.*
   FROM "fmlfmlfml/asdf".courses AS courses
   JOIN "fmlfmlfml/asdf".tests AS tests ON courses.id = tests.course_id
   JOIN "fmlfmlfml/asdf".marks AS marks ON tests.id = marks.test_id
   WHERE marks.student_id = S.id
-OR
+// OR
   SELECT courses.*
   FROM "fmlfmlfml/asdf".courses AS courses
   WHERE courses.id IN (
@@ -115,14 +123,9 @@ OR
           WHERE marks.student_id = S.id
       )
   )
-OR
+// OR
 
-
-
-
-SELECT *
-FROM all_calcs
-UNION ALL (
+(
     SELECT *
     FROM 
     (
@@ -137,13 +140,9 @@ UNION ALL (
         GROUP BY t.student_id , t.course_id, t.teacher
     ) AS calc
 ) as all_calcs
---WHERE everything.student_id =
---(
-    --SELECT DISTINCT all_calcs.student_id
-    --LIMIT 1
---)
---UNION
 
+
+// EXAMPLE CORRELATED: subquery in where's WHERE depends on an unrelated outside 
 SELECT last_name, salary, department_id
  FROM employees outer
  WHERE salary >
@@ -151,35 +150,10 @@ SELECT last_name, salary, department_id
                  FROM employees
                  WHERE department_id =
                         outer.department_id);
-// QUERIES
-
-// Marks(student)
-SELECT *
-FROM Marks
-WHERE Marks.student_id = Student.id
-
-// Marks(student, test)
-SELECT *
-FROM Marks
-JOIN Tests ON Marks.test_id = Test.id 
-WHERE Marks.student_id = Student.id
-
-// Marks(student, test)
-SELECT * as everything
-FROM Marks
-JOIN Tests ON Marks.test_id = Test.id
-JOIN Courses ON Tests.course_id = Courses.id 
-JOIN Students ON Marks.id = Students.id
 
 
-SELECT DISTINCT(Courses.course_id)
-FROM everything
-GROUP BY Students.id
-
-
-
-
-SELECT students.id, students.name, AVG() as totalAverage, as courses
+//ALL IN
+SELECT s.id, s.name, AVG() as totalAverage, as courses
 FROM students
 ORDER BY id DESC
 

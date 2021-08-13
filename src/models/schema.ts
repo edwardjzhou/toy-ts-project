@@ -2,12 +2,11 @@
  * ### HARDCODED PARAMETERS FROM ASSIGNMENT ###
  */
 
-// checks at runtime rather than statically
 
-// function isModelClass(arg: any): arg is Model {
-//     // return typeof arg.prototype.id === "number";
-//     return 'constructor' in arg.prototype
-// }
+function hasPrimaryKey(arg: any): arg is Model {
+    // return typeof arg.prototype.id === "number";
+    return 'constructor' in arg.prototype
+}
 
 
 import fs from 'fs';

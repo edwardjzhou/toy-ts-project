@@ -178,3 +178,66 @@ export const or = <A>(second: Predicate<A>) => (first: Predicate<A>): Predicate<
  * @since 2.11.0
  */
 export const and = <A>(second: Predicate<A>) => (first: Predicate<A>): Predicate<A> => (a) => first(a) && second(a)
+
+
+
+
+class B{}
+class C {
+  x = 0;
+}
+let inst1: C = new C()
+let inst2: InstanceType<typeof C> = new C() 
+let ctor1: new (...args:any[]) => C = C
+type Constructor<T> = new (...args: any[]) => T;
+let ctor3: typeof B = B
+ctor3 = ctor1 
+ctor1 = ctor3
+
+
+function toHex(this: Number) {
+  return this.toString(16);
+}
+ 
+function numberToString(n: ThisParameterType<typeof toHex>) {
+  return toHex.apply(n);
+}
+
+
+interface CatInfo {
+  age: number;
+  breed: string;
+}
+ 
+type CatName = "miffy" | "boris" | "mordred";
+ 
+const cats: Record<CatName, CatInfo> = {
+  miffy: { age: 10, breed: "Persian" },
+  boris: { age: 5, breed: "Maine Coon" },
+  mordred: { age: 16, breed: "British Shorthair" },
+};
+
+interface D{
+    hey(){return 5}
+}
+
+let d: D = {
+    hey: ()=>'df'
+}
+
+d.hey()
+
+class A{
+    private #df=5
+}
+// interface ArtworkSearchResponse {
+//   artists: {
+//     name: string;
+//     artworks: {
+//       name: string;
+//       deathdate: string | null;
+//       bio: string;
+//     }[];
+//   }[];
+// }
+

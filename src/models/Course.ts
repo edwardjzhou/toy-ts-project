@@ -1,23 +1,15 @@
-// import AbstractRecordModel from '../abstracts/AbstractRecordModel'
-
+interface CourseSchema {
+  id: number;
+  name: string;
+  teacher: string;
+}
 interface CourseSchema {
   id: number;
   name: string;
   teacher: string;
 }
 
-interface fml {
-  // name: string;
-  // teacher: string;
-}
-
-let mock = {
-  id: 5, 
-  name: 'ed',
-  teacher: 'me!',
-  fail: 324234
-}
-export default class Course extends AbstractRecordModel<CourseSchema> {
+export default class Course extends <CourseSchema> {
   public id;
   name;
   teacher; 
