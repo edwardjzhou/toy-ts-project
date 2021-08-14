@@ -29,8 +29,8 @@ interface Promisfied {
     isReadyPromiseResolver?: (v:any) => void;
 }
 class Parser<FileType extends string> implements Promisfied {
-  isReadyPromise: Promise<any>;
-  isReadyPromiseResolver?: (v:any) => void;
+  protected isReadyPromise: Promise<any>;
+  protected isReadyPromiseResolver?: (v:any) => void;
   path: FileType;
 
   constructor(path: FileType, cb?: Function) {

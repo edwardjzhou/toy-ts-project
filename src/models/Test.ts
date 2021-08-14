@@ -1,10 +1,42 @@
 const Course = require("./Course");
 
+
+type Mark = any; 
+type Course = any;
 interface TestTableSchema {
-  id;
-  course_id;
-  weight;
+  id: PrimaryKey;
+  course_id: ForeignKey;
+  weight: number; //must add to 100
 }
+type ForeignKey = {
+  readonly id: number;
+} 
+
+
+// start student
+type PrimaryKey = number 
+// PrimaryKeyed<constructor>
+type PrimaryKeyed<T extends new () => {} > = {
+  all: () => T[],
+  index: {
+    has(k: PrimaryKey): k is PrimaryKey
+    get(k: PrimaryKey): T,
+    set(k: PrimaryKey, v: T): PrimaryKeyed<T>,
+  },
+  addKey(k: PrimaryKey): void;
+}
+
+interface StudentTable {
+  id: unknown;
+  name: string;
+}
+interface StudentComputed {
+  marks: Mark; // join
+  totalAverage: number // for view
+  courses: Course; // for view
+}
+interface StudentSchema extends StudentTable, StudentComputed {}
+
 
 interface TestJoins {
   _course; // belongs to a course
