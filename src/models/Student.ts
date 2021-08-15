@@ -15,7 +15,7 @@ type PrimaryKeyed<T extends new () => {} > = {
     set(k: PrimaryKey, v: T): PrimaryKeyed<T>,
   },
   addKey(k: PrimaryKey): void;
-}
+} 
 
 interface StudentTable {
   id: unknown;
@@ -39,11 +39,11 @@ class ApplicationController {
     this.modelCtors = modelCtors
   }
 
-  loadFiles(){}
-  parseCsv(){}
-  computeJoins(){}
-  validate(){}
-  makeJsonView(){}
+  read(){} // fs.readfile
+  parse(){} // csv and ORM-ify
+  compute(){} // joins and other computed props 
+  validate(){} // validations like sum(score)=100
+  makeView(){} // return a josn obj1
 }
 
 // FKed vs PKed joins-- FK is the aggressor
@@ -69,6 +69,52 @@ const useIndex: <T extends new()=>{}>(Base: T) => T = (Base) => {
   return Z
 }
 
+
+interface Foo {
+  propA: boolean;
+  propB: boolean;
+}
+ 
+declare function f<T>(x: T): T extends Foo ? string : number;
+ 
+
+
+type ForeignKeyPropertyNames<T> = {
+  [K in keyof T]: T[K] extends Function ? K : never;
+}[keyof T];
+type ForeignKeyPropertyNames<T> = Pick<T, ForeignKeyPropertyNames<T>>;
+ 
+type NonFunctionPropertyNames<T> = {
+  [K in keyof T]: T[K] extends Function ? never : K;
+}[keyof T];
+type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+ 
+interface Part {
+  id: number;
+  name: string;
+  subparts: Part[];
+  updatePart(newName: string): void;
+}
+ 
+type T1 = FunctionPropertyNames<Part>;
+     
+type T1 = "updatePart"
+type T2 = NonFunctionPropertyNames<Part>;
+     
+type T2 = "id" | "name" | "subparts"
+type T3 = FunctionProperties<Part>;
+     
+type T3 = {
+    updatePart: (newName: string) => void;
+}
+type T4 = NonFunctionProperties<Part>;
+function foo<U>(x: U) {
+  // Has type 'U extends Foo ? string : number'
+  let a = f(x);
+ 
+  // This assignment is allowed though!
+  let b: string | number = a;
+}
 
 class StudentController extends useIndex(Controller) {
 

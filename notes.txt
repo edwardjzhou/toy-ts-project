@@ -71,3 +71,13 @@ type Dog = {
  color: string; 
  name: string; 
 } 
+
+
+OBJEC LITERAL TYPES like ad-hoc ones CANNOT have more props than written
+like you cant {
+    name: 'df'
+    id:1 
+}
+function logName(something: { name: string }) {
+    console.log(something.name);
+}

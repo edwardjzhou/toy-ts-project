@@ -195,14 +195,19 @@ ctor3 = ctor1
 ctor1 = ctor3
 
 
-function toHex(this: Number) {
-  return this.toString(16);
-}
- 
-function numberToString(n: ThisParameterType<typeof toHex>) {
-  return toHex.apply(n);
+
+class Record<T> {
+  key?: T
+  hasKey(): this is { key : T } {
+    return this.key !== undefined; 
+  }
 }
 
+
+ type d = keyof eaads 
+
+// FROM A UNION PICK WHAT TYPES YOU WANT (the second param has to BE LESS PRECISE/WEAKER (Assingable))
+ type T1 = Extract<string | number | (() => void), Function>;
 
 interface CatInfo {
   age: number;
