@@ -21,9 +21,11 @@
 // interface ViewShadow extends Pick<typeof ShowIdEnum, 'ALWAYS'> { }
 // type suffixes = typeof FileTypes[keyof typeof FileTypes];
 // let h: Pick<typeof Suffixes, 'csv' > = 'csv'
-function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key) {
+function getProperty<Type, Key extends keyof Type>(obj: Type, key: Key): Pick<Type, Key> {
   return obj[key];
 }
+
+
 
 type funcParams<T extends (...arg: any) => any> = T extends (...args: infer R) => any ? R : any
 

@@ -70,23 +70,9 @@ const useIndex: <T extends new()=>{}>(Base: T) => T = (Base) => {
 }
 
 
-interface Foo {
-  propA: boolean;
-  propB: boolean;
-}
- 
-declare function f<T>(x: T): T extends Foo ? string : number;
- 
-
-
-type ForeignKeyPropertyNames<T> = {
-  [K in keyof T]: T[K] extends Function ? K : never;
-}[keyof T];
-type ForeignKeyPropertyNames<T> = Pick<T, ForeignKeyPropertyNames<T>>;
- 
 type NonFunctionPropertyNames<T> = {
   [K in keyof T]: T[K] extends Function ? never : K;
-}[keyof T];
+} [keyof T];
 type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
  
 interface Part {
@@ -96,100 +82,90 @@ interface Part {
   updatePart(newName: string): void;
 }
  
-type T1 = FunctionPropertyNames<Part>;
-     
-type T1 = "updatePart"
 type T2 = NonFunctionPropertyNames<Part>;
+// type T2 = "id" | "name" | "subparts"
+// type T3 = FunctionProperties<Part>;
      
-type T2 = "id" | "name" | "subparts"
-type T3 = FunctionProperties<Part>;
-     
-type T3 = {
-    updatePart: (newName: string) => void;
-}
-type T4 = NonFunctionProperties<Part>;
-function foo<U>(x: U) {
-  // Has type 'U extends Foo ? string : number'
-  let a = f(x);
+// type T3 = {
+//     updatePart: (newName: string) => void;
+// }
+// type T4 = NonFunctionProperties<Part>;
+// function foo<U>(x: U) {
+//   // Has type 'U extends Foo ? string : number'
+//   let a = f(x);
  
-  // This assignment is allowed though!
-  let b: string | number = a;
-}
+//   // This assignment is allowed though!
+//   let b: string | number = a;
+// }
 
-class StudentController extends useIndex(Controller) {
+// class StudentController extends useIndex(Controller) {
 
-  private static index: Map<PrimaryKey, Student> = new Map()
-  public static get all(): Student[]{
-    return [...this.index.values()]
-  }
+//   private static index: Map<PrimaryKey, Student> = new Map()
+//   public static get all(): Student[]{
+//     return [...this.index.values()]
+//   }
  
-  protected static addKey(this: typeof Student, s: Student, id: PrimaryKey): id is PrimaryKey {
-    if (!Number.isFinite(id)) return false
-    if (this.index.has(s.id)) return false
-    this.index.set(s.id, s)
-    return true
-  }
+//   protected static addKey(this: typeof Student, s: Student, id: PrimaryKey): id is PrimaryKey {
+//     if (!Number.isFinite(id)) return false
+//     if (this.index.has(s.id)) return false
+//     this.index.set(s.id, s)
+//     return true
+//   }
   
-  public load(a: any): any{
+//   public load(a: any): any{
+//   }
 
-  }
+//   makeUnique<T>(
+//     collection: Set<T> | T[],
+//     comparer: (x: T, y: T) => number
+//   ): Set<T> | T[] {
+//     if (collection instanceof Set) {
+//       return collection;
+//     }
+//     collection.sort(comparer);
+//     for (let i = 0; i < collection.length; i++) {
+//       let j = i;
+//       while (
+//         j < collection.length &&
+//         comparer(collection[i], collection[j + 1]) === 0
+//       ) {
+//         j++;
+//       }
+//       collection.splice(i + 1, j - i);
+//     }
+//     return collection;
+//   }
 
-  makeUnique<T>(
-    collection: Set<T> | T[],
-    comparer: (x: T, y: T) => number
-  ): Set<T> | T[] {
-    // Early bail-out if we have a Set.
-    // We assume the elements are already unique.
-    if (collection instanceof Set) {
-      return collection;
-    }
-    // Sort the array, then remove consecutive duplicates.
-    collection.sort(comparer);
-    for (let i = 0; i < collection.length; i++) {
-      let j = i;
-      while (
-        j < collection.length &&
-        comparer(collection[i], collection[j + 1]) === 0
-      ) {
-        j++;
-      }
-      collection.splice(i + 1, j - i);
-    }
-    return collection;
-  }
-
-}
-
-export default class Student extends StudentController implements StudentSchema {
-  #id: string | number;
-  readonly id: PrimaryKey = NaN;
+// }
+//extends StudentController 
+export default class Student implements StudentSchema {
+  #id: PrimaryKey;
+  public id: PrimaryKey;
   public name: string;
-  public marks: Mark;
-  private _courses: Course[] = [];
-  private _totalAverage: number = NaN;
-
-/**
- *  
- *
- * @type {Course[]}
- * @memberof Student
- */
-public get courses(): Course[] {
+  private _marks: Mark[]; // has-many
+  private _courses: Course[] = []; // has-many
+  private _totalAverage: number = NaN; // computed
+  public get courses(): Course[] {
     return this._courses;
   }
   public set courses(value: Course[]) {
     this._courses = value;
   }
-
   public get totalAverage(): number {
     return this._totalAverage;
   }
   public set totalAverage(value: number) {
     this._totalAverage = value;
   }
+  public get marks(): Mark[] {
+    return this._marks;
+  }
+  public set marks(value: Mark[]) {
+    this._marks = value;
+  }
 
-  constructor(id: unknown, name: string){
-    super()
+  constructor(id: PrimaryKey, name: string){
+    // super()
     this.id = this.#id = Number(id)
     if (!new.target.addKey(this, this.#id)) throw TypeError('id not PK; or not unique')
     this.name = name;
@@ -199,12 +175,22 @@ public get courses(): Course[] {
 
 }
 
-let s: Student = new Student('34',  'dsf')
-let s2: Student = new Student(2,  'dsf')
-class A extends StudentController {
-}
-console.log(Student.all)
-console.log(A.all)
+type TupleToObject<T extends [string, any]> = { [key in T[0]]: Extract<T, [key, any]>[1] };
+type d = TupleToObject<ConstructorParameters<typeof Student>>
+type GetReadonlyKeys<T extends object> = { [K in keyof T]: K extends { -readonly [K in keyof T]: T[K] }[K] ? K : never }[keyof T]
+
+// type NotFunctionNotPrivateProps<T> 4d= {
+//   [K in keyof T]: T[K] extends get (a:any)=>{} ? never : K extends `_${string}` ? never : K;
+// }[keyof T]
+
+
+
+// let s: Student = new Student('34',  'dsf')
+// let s2: Student = new Student(2,  'dsf')
+// class A extends StudentController {
+// }
+// console.log(Student.all)
+// console.log(A.all)
 
 // s2.df = 34
 
@@ -222,14 +208,13 @@ console.log(A.all)
 //   add(item: T | TupleFromInterface<T, K>): UUID;
 // }
 
-type hey = {
-  [id:number]: any
-}
+
 abstract class Controller {
     static [P: string]: symbol | Function;
-    abstract readRecords(a: any): any;
-    abstract parseRecords(a: any): any;
-    abstract mapRecords(a: any): any;
+    // abstract readRecords(a: any): any;
+    // abstract parseRecords(a: any): any;
+    abstract getRecords(a: any): any;
+    // abstract mapRecords(a: any): any;
     abstract connectRecords(a: any): any;
     abstract validateRecords(a: any): any;
     abstract computeRecords(a: any): any;
@@ -257,56 +242,55 @@ const FKsearcher = (Base: Controller) => {
         constructor(...args: any[]){
             super()
         }
-        private static index: Map<string, string> = new Map()
-        static createIndex(){}
+        private static index: any[] = []
     }
     return FKer
 }
 
-class StudentController extends PKindexer(Controller) {
-    constructor(){
-        super()
-    }
-}
+// class StudentController extends PKindexer(Controller) {
+//     constructor(){
+//         super()
+//     }
+// }
 
 
-export default abstract class Controller<T extends Model> {
-    constructor(cls: typeof Model){
+// export default abstract class Controller<T extends Model> {
+//     constructor(cls: typeof Model){
         
-        if (cls.id) {
-        }
-    }
-    // aka show, findOne
-    static findById(){}
+//         if (cls.id) {
+//         }
+//     }
+//     // aka show, findOne
+//     static findById(){}
 
-    createFromImport(){}
+//     createFromImport(){}
     
-    // 1.create objs 2. run query 3.format for json 
-    createView(){}
+//     // 1.create objs 2. run query 3.format for json 
+//     createView(){}
 
-    // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html
-    makeUnique<T>(
-        collection: Set<T> | T[],
-        comparer: (x: T, y: T) => number
-    ): Set<T> | T[] {
+//     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html
+//     makeUnique<T>(
+//         collection: Set<T> | T[],
+//         comparer: (x: T, y: T) => number
+//     ): Set<T> | T[] {
 
-        if (collection instanceof Set) return collection;
+//         if (collection instanceof Set) return collection;
     
-    // Sort the array, then remove consecutive duplicates.
-    collection.sort(comparer);
-    for (let i = 0; i < collection.length; i++) {
-        let j = i;
-        while (
-        j < collection.length &&
-        comparer(collection[i], collection[j + 1]) === 0
-        ) {
-        j++;
-        }
-        collection.splice(i + 1, j - i);    
-    }
-    return collection;
-    }
+//     // Sort the array, then remove consecutive duplicates.
+//     collection.sort(comparer);
+//     for (let i = 0; i < collection.length; i++) {
+//         let j = i;
+//         while (
+//         j < collection.length &&
+//         comparer(collection[i], collection[j + 1]) === 0
+//         ) {
+//         j++;
+//         }
+//         collection.splice(i + 1, j - i);    
+//     }
+//     return collection;
+//     }
 
-}
+// }
 
-let c = new Controller<MyModel>(MyModel);
+// let c = new Controller<MyModel>(MyModel);
