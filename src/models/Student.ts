@@ -135,11 +135,11 @@ type T2 = NonFunctionPropertyNames<Part>;
 //     }
 //     return collection;
 //   }
-
 // }
+
 //extends StudentController 
 export default class Student implements StudentSchema {
-  #id: PrimaryKey;
+  // #id: PrimaryKey;
   public id: PrimaryKey;
   public name: string;
   private _marks: Mark[]; // has-many
@@ -166,7 +166,8 @@ export default class Student implements StudentSchema {
 
   constructor(id: PrimaryKey, name: string){
     // super()
-    this.id = this.#id = Number(id)
+    this.id = Number(id)
+    // this.id = this.#id = Number(id)
     if (!new.target.addKey(this, this.#id)) throw TypeError('id not PK; or not unique')
     this.name = name;
     this.totalAverage = NaN;
@@ -175,9 +176,9 @@ export default class Student implements StudentSchema {
 
 }
 
-type TupleToObject<T extends [string, any]> = { [key in T[0]]: Extract<T, [key, any]>[1] };
-type d = TupleToObject<ConstructorParameters<typeof Student>>
-type GetReadonlyKeys<T extends object> = { [K in keyof T]: K extends { -readonly [K in keyof T]: T[K] }[K] ? K : never }[keyof T]
+// type TupleToObject<T extends [any, any]> = { [key in T[0]]: Extract<T, [key, any]>[1] };
+// type d = TupleToObject<ConstructorParameters<typeof Student>>
+// type GetReadonlyKeys<T extends object> = { [K in keyof T]: K extends { -readonly [K in keyof T]: T[K] }[K] ? K : never }[keyof T]
 
 // type NotFunctionNotPrivateProps<T> 4d= {
 //   [K in keyof T]: T[K] extends get (a:any)=>{} ? never : K extends `_${string}` ? never : K;
