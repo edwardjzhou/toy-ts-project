@@ -1,35 +1,74 @@
-import Test from './Test';
-import Student from './Student';
-import Course from './Course';
+// import Test from './Test';
+import { Student } from './Student';
+// import Course from './Course';
 
-// interface MarkForeignKeys {
-//     test_id;
-//     student_id;
-// }
+type Course = any;
+type ForeignKey = number;
+type mark = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 | 81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 | 98 | 99 | 100;
+interface MarkSchema {
+  test_id: ForeignKey;
+  student_id: ForeignKey;
+  mark: mark; 
+}
+interface MarkComputed {
+    student: Student; // belongs-to-one
+    test: Test; // belongs-to-one
+}
+interface MarkRecord extends MarkSchema, MarkComputed {}
 
-// type MarkDerived<T> = {
-//     [P in keyof T as `_${P}`]: T[P];
-// }
+
+import Controller from "../abstract/Controller";
+import Parser from "../Parsing/Parser";
+
+export class MarkController extends Controller<Mark> {
+  create(m: Mark): boolean
+  create(test_id: PrimaryKey, name: string): boolean
+  create(obj: {id: number; name: string}): boolean
+  create<T extends StudentSchema>(obj: T): boolean
+  public create(arg1: StudentSchema | Student | PrimaryKey, arg2?: string): boolean {
+    var id, name, student;
+    if (arg1 instanceof Student) { 
+      // is already instantiated but not saved to in-memory index
+      ( { id, name } = arg1)
+      student = arg1
+    } else if (typeof arg1 === 'number' && typeof arg2 === 'string'){
+      // is of sufficient arity; correct order, and type but needs instantiation
+      id = arg1 
+      name = arg2 
+      student = new Student(id, name)
+    } else if (typeof arg1 === 'object') {
+      // is an object of correct type (not yet destructured) but needs instantiation
+      ( { id, name } = arg1)
+      student = new Student(id, name)
+    } else {
+      // wrong types
+      return false
+    }
+    if (!Number.isFinite(id)) return false // not a indexable number
+    if (Student.index.has(id)) return false // not a unique primary key
+    Student.index.set(id, student) // save to index 
+    return true
+  }
+  public index(){
+    return Student.all 
+  }
+  public show(){}
+  public update(){} 
+}
 
 
-// type Split<S extends string, D extends string> =
-//     string extends S ? string[] :
-//         S extends '' ? [] :
-//             S extends `${infer T}${D}${infer U}` ?  [T, ...Split<U, D>] :  [S];
-// type test = Split<'student_id', `_id`>
 
-type ForeignKeyField<S extends string> = S extends `${infer T}_id` ?  T : never;
+import { CsvTableParser } from '../Parsing/Parser'
+
 
 export default class Mark {
     test_id: number;
     student_id: number;
     mark: number;
     
-    static all;
     // joins
     private _test;
     private _student;
-    // private _course;
     // derived
     private _weightedMark;
 
@@ -82,19 +121,4 @@ export default class Mark {
 
 }
 
-
-// interface MarkFK<T> {
-//     [P in keyof T]: number
-// }
-
-
-// let hey: MarkFK<Mark> = {
-//   test_id: `1`,
-//     student_id: 2,
-//     mark: 3
-// }
-
-type hey2 = {} & Mark
-
-let yo: hey2 = {}
 

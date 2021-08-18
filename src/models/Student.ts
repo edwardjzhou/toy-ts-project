@@ -1,24 +1,10 @@
-type ForeignKey = {
-  readonly id: number;
-} 
+type ForeignKey =  number;
 type Mark = any; 
 type Course = any;
-
-// start student
 type PrimaryKey = number 
-// PrimaryKeyed<constructor>
-type PrimaryKeyed<T extends new () => {} > = {
-  all: () => T[],
-  index: {
-    has(k: PrimaryKey): k is PrimaryKey,
-    get(k: PrimaryKey): T,
-    set(k: PrimaryKey, v: T): PrimaryKeyed<T>,
-  },
-  addKey(k: PrimaryKey): void;
-} 
 
-interface StudentTable {
-  id: unknown;
+interface StudentSchema {
+  id: PrimaryKey;
   name: string;
 }
 interface StudentComputed {
@@ -26,125 +12,84 @@ interface StudentComputed {
   totalAverage: number // for view
   courses: Course; // for view
 }
-interface StudentSchema extends StudentTable, StudentComputed {}
+interface StudentRecord extends StudentSchema, StudentComputed {}
 
 
+import Controller from "../abstract/Controller";
+import Parser from "../Parsing/Parser";
 
-class ApplicationController {
-  public parsers: any[];
-  public readonly modelCtors:any[];
-
-  constructor(parsers: any[], modelCtors: any[]){
-    this.parsers = parsers
-    this.modelCtors = modelCtors
-  }
-
-  read(){} // fs.readfile
-  parse(){} // csv and ORM-ify
-  compute(){} // joins and other computed props 
-  validate(){} // validations like sum(score)=100
-  makeView(){} // return a josn obj1
-}
-
-// FKed vs PKed joins-- FK is the aggressor
-abstract class Controller {
-  constructor(){}
-
-  static [P: string]: symbol | undefined
-  loadRecords(a: any): any {
-  }
-  mapRecords(){}
-
-
-}
-
-const useIndex: <T extends new()=>{}>(Base: T) => T = (Base) => {
-  abstract class Z extends Base {
-    constructor(...args: any[]){
-      super()
+export class StudentController extends Controller<Student> {
+  create(s: Student): boolean
+  create(id: PrimaryKey, name: string): boolean
+  create(obj: {id: number; name: string}): boolean
+  create<T extends StudentSchema>(obj: T): boolean
+  public create(arg1: StudentSchema | Student | PrimaryKey, arg2?: string): boolean {
+    var id, name, student;
+    if (arg1 instanceof Student) { 
+      // is already instantiated but not saved to in-memory index
+      ( { id, name } = arg1)
+      student = arg1
+    } else if (typeof arg1 === 'number' && typeof arg2 === 'string'){
+      // is of sufficient arity; correct order, and type but needs instantiation
+      id = arg1 
+      name = arg2 
+      student = new Student(id, name)
+    } else if (typeof arg1 === 'object') {
+      // is an object of correct type (not yet destructured) but needs instantiation
+      ( { id, name } = arg1)
+      student = new Student(id, name)
+    } else {
+      // wrong types
+      return false
     }
-    // private static index: Map<PrimaryKey, Student> = new Map()
-    // static createIndex(){}
+    if (!Number.isFinite(id)) return false // not a indexable number
+    if (Student.index.has(id)) return false // not a unique primary key
+    Student.index.set(id, student) // save to index 
+    return true
   }
-  return Z
+  public index(){
+    return Student.all 
+  }
+  public show(){}
+  public update(){} 
 }
 
 
-type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends Function ? never : K;
-} [keyof T];
-type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
- 
-interface Part {
-  id: number;
-  name: string;
-  subparts: Part[];
-  updatePart(newName: string): void;
+
+import { CsvTableParser } from '../Parsing/Parser'
+
+// for a model class Student, there is a students table
+// Student subs AppRecord ?
+// any record can either be foreign keyed, primary keyed, or primary and foreign keyed
+abstract class PrimaryKeyedRecord {
+  public id: PrimaryKey
+
+  public static index: Map<PrimaryKey, PrimaryKeyedRecord> = new Map()
+  public static get all(): PrimaryKeyedRecord[] {
+    // parse here?
+    return [...this.index.values()]
+  }
+  public static isLoaded: boolean = false; 
+  public static load(){
+    this.isLoaded = true
+    new CsvTableParser(Student).run('/../students.csv').then( ({headers, records}) => {
+      console.log(headers, records)
+    })
+  }
+  public static find(id: PrimaryKey): PrimaryKeyedRecord | undefined {
+    return this.index.get(id)
+  }
+  protected constructor(id: PrimaryKey){
+    this.id = id
+  }
 }
- 
-type T2 = NonFunctionPropertyNames<Part>;
-// type T2 = "id" | "name" | "subparts"
-// type T3 = FunctionProperties<Part>;
-     
-// type T3 = {
-//     updatePart: (newName: string) => void;
-// }
-// type T4 = NonFunctionProperties<Part>;
-// function foo<U>(x: U) {
-//   // Has type 'U extends Foo ? string : number'
-//   let a = f(x);
- 
-//   // This assignment is allowed though!
-//   let b: string | number = a;
-// }
 
-// class StudentController extends useIndex(Controller) {
 
-//   private static index: Map<PrimaryKey, Student> = new Map()
-//   public static get all(): Student[]{
-//     return [...this.index.values()]
-//   }
- 
-//   protected static addKey(this: typeof Student, s: Student, id: PrimaryKey): id is PrimaryKey {
-//     if (!Number.isFinite(id)) return false
-//     if (this.index.has(s.id)) return false
-//     this.index.set(s.id, s)
-//     return true
-//   }
-  
-//   public load(a: any): any{
-//   }
-
-//   makeUnique<T>(
-//     collection: Set<T> | T[],
-//     comparer: (x: T, y: T) => number
-//   ): Set<T> | T[] {
-//     if (collection instanceof Set) {
-//       return collection;
-//     }
-//     collection.sort(comparer);
-//     for (let i = 0; i < collection.length; i++) {
-//       let j = i;
-//       while (
-//         j < collection.length &&
-//         comparer(collection[i], collection[j + 1]) === 0
-//       ) {
-//         j++;
-//       }
-//       collection.splice(i + 1, j - i);
-//     }
-//     return collection;
-//   }
-// }
-
-//extends StudentController 
-export default class Student implements StudentSchema {
-  // #id: PrimaryKey;
-  public id: PrimaryKey;
-  public name: string;
-  private _marks: Mark[]; // has-many
-  private _courses: Course[] = []; // has-many
-  private _totalAverage: number = NaN; // computed
+export class Student extends PrimaryKeyedRecord implements StudentRecord {
+  // accessors to joins and computed values; dependent on other tables
+  private _marks!: Mark[]; // has-many
+  private _courses!: Course[]; // has-many
+  private _totalAverage!: number; // computed
   public get courses(): Course[] {
     return this._courses;
   }
@@ -163,135 +108,20 @@ export default class Student implements StudentSchema {
   public set marks(value: Mark[]) {
     this._marks = value;
   }
-
-  constructor(id: PrimaryKey, name: string){
-    // super()
-    this.id = Number(id)
-    // this.id = this.#id = Number(id)
-    if (!new.target.addKey(this, this.#id)) throw TypeError('id not PK; or not unique')
+  // intrinsic to students table
+  public override id: PrimaryKey;
+  public name: string;
+  public constructor(id: PrimaryKey, name: string){
+    super(id)
+    this.id = Number(id);
     this.name = name;
-    this.totalAverage = NaN;
-    this.courses = [];
   }
-
 }
 
-// type TupleToObject<T extends [any, any]> = { [key in T[0]]: Extract<T, [key, any]>[1] };
-// type d = TupleToObject<ConstructorParameters<typeof Student>>
-// type GetReadonlyKeys<T extends object> = { [K in keyof T]: K extends { -readonly [K in keyof T]: T[K] }[K] ? K : never }[keyof T]
-
-// type NotFunctionNotPrivateProps<T> 4d= {
-//   [K in keyof T]: T[K] extends get (a:any)=>{} ? never : K extends `_${string}` ? never : K;
-// }[keyof T]
-
-
-
-// let s: Student = new Student('34',  'dsf')
-// let s2: Student = new Student(2,  'dsf')
-// class A extends StudentController {
-// }
-// console.log(Student.all)
-// console.log(A.all)
-
-// s2.df = 34
-
-// function hey({a=534, b=11}: {a?: number, b?: number} = {}) {
-//   console.log(a,b)
-// }
-
-// hey({a:1})
-// hey()
-
-// type Lookup<T, K> = K extends keyof T ? T[K] : never;
-// type TupleFromInterface<T, K extends Array<keyof T>> = { [I in keyof K]: Lookup<T, K[I]> }
-
-// declare class Repo<T, K extends Array<keyof T>> {
-//   add(item: T | TupleFromInterface<T, K>): UUID;
-// }
-
-
-abstract class Controller {
-    static [P: string]: symbol | Function;
-    // abstract readRecords(a: any): any;
-    // abstract parseRecords(a: any): any;
-    abstract getRecords(a: any): any;
-    // abstract mapRecords(a: any): any;
-    abstract connectRecords(a: any): any;
-    abstract validateRecords(a: any): any;
-    abstract computeRecords(a: any): any;
-    abstract viewRecords(a: any): any;
+export default {
+  StudentController,
+  Student
 }
 
 
-const PKindexer = (Base: typeof Controller) => {
-  abstract class PKer extends Base {
-        private static index: Map<string, string> = new Map()
-        public static find_by(id: any){
-
-        }
-        constructor(...args: any[]){
-            super()
-        }
-        override loadRecords(a:any):any{}
-        static createIndex(){}
-    }
-    return PKer
-}
-
-const FKsearcher = (Base: Controller) => {
-    abstract class FKer extends Base {
-        constructor(...args: any[]){
-            super()
-        }
-        private static index: any[] = []
-    }
-    return FKer
-}
-
-// class StudentController extends PKindexer(Controller) {
-//     constructor(){
-//         super()
-//     }
-// }
-
-
-// export default abstract class Controller<T extends Model> {
-//     constructor(cls: typeof Model){
-        
-//         if (cls.id) {
-//         }
-//     }
-//     // aka show, findOne
-//     static findById(){}
-
-//     createFromImport(){}
-    
-//     // 1.create objs 2. run query 3.format for json 
-//     createView(){}
-
-//     // https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-3.html
-//     makeUnique<T>(
-//         collection: Set<T> | T[],
-//         comparer: (x: T, y: T) => number
-//     ): Set<T> | T[] {
-
-//         if (collection instanceof Set) return collection;
-    
-//     // Sort the array, then remove consecutive duplicates.
-//     collection.sort(comparer);
-//     for (let i = 0; i < collection.length; i++) {
-//         let j = i;
-//         while (
-//         j < collection.length &&
-//         comparer(collection[i], collection[j + 1]) === 0
-//         ) {
-//         j++;
-//         }
-//         collection.splice(i + 1, j - i);    
-//     }
-//     return collection;
-//     }
-
-// }
-
-// let c = new Controller<MyModel>(MyModel);
+Student.load()

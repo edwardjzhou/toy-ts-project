@@ -91,6 +91,54 @@ let taxi: Car = {
   year: 2014,
 };
  
+// type StringToArray<S extends string> = S extends `${infer first}${infer rest}` ? [first, ...StringToArray<rest>] : S extends '' ? [] : [S]
+// type LengthOfString<S extends string> = StringToArray<S>['length']
+
+
+type NonFunctionPropertyNames<T> = {
+  [K in keyof T]: T[K] extends Function ? never : K;
+} [keyof T];
+type NonFunctionProperties<T> = Pick<T, NonFunctionPropertyNames<T>>;
+ 
+interface Part {
+  id: number;
+  name: string;
+  subparts: Part[];
+  updatePart(newName: string): void;
+}
+ 
+type T2 = NonFunctionPropertyNames<Part>;
+// type T2 = "id" | "name" | "subparts"
+// type T3 = FunctionProperties<Part>;
+     
+// type T3 = {
+//     updatePart: (newName: string) => void;
+// }
+// type T4 = NonFunctionProperties<Part>;
+// function foo<U>(x: U) {
+//   // Has type 'U extends Foo ? string : number'
+//   let a = f(x);
+ 
+//   // This assignment is allowed though!
+//   let b: string | number = a;
+// }
+
+// type TupleToObject<T extends [any, any]> = { [key in T[0]]: Extract<T, [key, any]>[1] };
+// type d = TupleToObject<ConstructorParameters<typeof Student>>
+// type GetReadonlyKeys<T extends object> = { [K in keyof T]: K extends { -readonly [K in keyof T]: T[K] }[K] ? K : never }[keyof T]
+
+// type NotFunctionNotPrivateProps<T> 4d= {
+//   [K in keyof T]: T[K] extends get (a:any)=>{} ? never : K extends `_${string}` ? never : K;
+// }[keyof T]
+
+// type Lookup<T, K> = K extends keyof T ? T[K] : never;
+// type TupleFromInterface<T, K extends Array<keyof T>> = { [I in keyof K]: Lookup<T, K[I]> }
+
+// declare class Repo<T, K extends Array<keyof T>> {
+//   add(item: T | TupleFromInterface<T, K>): UUID;
+// }
+
+
 // Manufacturer and model are both of type string,
 // so we can pluck them both into a typed string array
 let makeAndModel: string[] = pluck(taxi, ["manufacturer", "model"]);

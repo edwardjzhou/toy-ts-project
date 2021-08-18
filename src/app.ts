@@ -7,50 +7,43 @@
  * tsc src/* --outDir dist --allowJs
  * node '/Users/edward/Desktop/hatchways_fullstack/dist/app.js' courses.csv students.csv tests.csv marks.csv output.json
 */
-class App {  
-  parse(){}
-  validate(){}
-  runController(){}
-  outputToJson(){
+
+import { StudentController } from './models/Student'
+// class App {  
+
+//   public readonly models: any[];
+
+//   constructor(parsers: any[], modelCtors: any[]){
+//     this.parsers = parsers
+//     this.modelCtors = modelCtors
+//   }
+
+//   read(){} // fs.readfile
+//   parse(){} // csv and ORM-ify
+//   compute(){} // joins and other computed props 
+//   validate(){} // validations like sum(score)=100
+//   viewReportcard(){} // return a josn obj1
+// }
+
     // let result;
     // const areTestWeightsValid = Test.validateTestWeights(this.tests);
     // console.log(Student, this.students)
-    return
+    // return
 
-    if (areTestWeightsValid === false) {
-      result = {
-        "error": "Invalid course weights"
-      };
-    } else {
-      this.students.sort(student => student.id)
+    // if (areTestWeightsValid === false) {
+    //   result = {
+    //     "error": "Invalid course weights"
+    //   };
+    // } else {
+    //   this.students.sort(student => student.id)
 
-    }
+    // }
     
-    result = JSON.stringify(result, null, 2)
-    fs.writeFile('output1.json', result, err => {
-      if (err) throw err
-    })
-    console.log(1123,this)
-  }
-
-}
-
-// const principalsApp = new App().loadTables().then((results) => {
-//       // this.outputJson();
-//     })
-//     .catch(err => {
-//       console.warn(err.stack)
-//       throw err;
-//     });
-
-
-//     /**
-//  * To be called 70 to 80 days after {@link plantCarrot}.
-//  */
-
-
-// async function readAsyncIterable(dependentPromisesArray){
-//   for await (const aPromiseResolution of dependentPromisesArray) {
-//     console.log(aPromiseResolution)
+    // result = JSON.stringify(result, null, 2)
+    // fs.writeFile('output1.json', result, err => {
+    //   if (err) throw err
+    // })
+    // console.log(1123,this)
 //   }
+
 // }
