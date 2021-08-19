@@ -1,123 +1,59 @@
-// import Test from './Test';
-// import Course from './Course';
+import { Test } from './Test';
 import { Student } from './Student';
 
-import Controller from "../abstract/BaseController";
-import { CsvTableParser } from '../Parsing/Parser'
-
 import type { ForeignKey, Grade } from './types'
-type Test = any;
-type Course = any;
-interface MarkSchema {
-  test_id: ForeignKey;
-  student_id: ForeignKey;
-  mark: Grade;
+
+export interface MarkSchema {
+  test_id: ForeignKey;    // FK
+  student_id: ForeignKey; // FK
+  mark: Grade;            // 0-100 whole numbers
 }
 interface MarkComputed {
-    test: Test; // belongs-to-one
-    student: Student; // belongs-to-one
+    test: Test;          // belongs-to-one
+    student: Student;    // belongs-to-one
 }
-interface MarkRecord extends MarkSchema, MarkComputed {}
+type MarkRecord = MarkSchema & MarkComputed;
 
-
-
-export class MarkController extends Controller<Mark> {
-  create(m: Mark): boolean
-  create(test_id: PrimaryKey, name: string): boolean
-  create(obj: {id: number; name: string}): boolean
-  create<T extends MarkSchema>(obj: T): boolean
-  public create(arg1: MarkSchema | Student | PrimaryKey, arg2?: string): boolean {
-    var id, name, student;
-    if (arg1 instanceof Student) { 
-      // is already instantiated but not saved to in-memory index
-      ( { id, name } = arg1)
-      student = arg1
-    } else if (typeof arg1 === 'number' && typeof arg2 === 'string'){
-      // is of sufficient arity, correct order, and type; not yet instantiated
-      id = arg1 
-      name = arg2 
-      student = new Student(id, name)
-    } else if (typeof arg1 === 'object') {
-      // is an object that contains k/vs of correct type (not yet destructured); not yet instantiated
-      ( { id, name } = arg1)
-      student = new Student(id, name)
-    } else {
-      // wrong types
-      return false
-    }
-    if (!Number.isFinite(id)) return false // not a indexable number
-    if (Student.index.has(id)) return false // not a unique primary key
-    Student.index.set(id, student) // save to index 
-    return true
-  }
-  public index(){
-    return Student.all 
-  }
-  public show(){}
-  public update(){} 
-}
 export class Mark {
-    test_id: number;
-    student_id: number;
-    mark: number;
-    
-    // joins
-    private _test;
-    private _student;
-    // derived
-    private _weightedMark;
+    // joins and computed
+    private _weightedMark!: number;  // computed for veiw
+    private _test!: Test;            // FK
+    private _student!: Student;      // FK
+    // join and computed members' accessors
+    public get test(): Test {
+      return this._test;
+    }
+    public set test(value: Test) {
+      this._test = value;
+    }
+    public get student(): Student {
+      return this._student;
+    }
+    public set student(value: Student) {
+      this._student = value;
+  }
+    public get weightedMark(): number {
+      let current; 
+      current ??= this.test?.weight * this.mark;
+      this.weightedMark = Math.round(current * 100) / 100;
+      return this._weightedMark
+    }
+    public set weightedMark(value: number) {
+      this._weightedMark = value;
+    }
 
-    constructor(test_id, student_id, mark){
+    // table data
+    public test_id: ForeignKey;
+    public student_id: ForeignKey;
+    public mark: Grade;
+    constructor(test_id: ForeignKey, student_id: ForeignKey, mark: Grade){
         this.test_id = Number(test_id);
         this.student_id = Number(student_id);
-        this.mark = Number(mark);
+        this.mark = mark;
     }
-
-    makeJoins(){
-        this.test;
-        this.student;
-        this.course;
-    }
-
-    // a mark belongs to one test
-    get test(){
-        this._test ||= Test.indexToRowMap.get(this.test_id);
-        return this._test;
-    }
-    // a mark belongs to one student
-    get student(){
-        this._student ||= Student.indexToRowMap.get(this.student_id);
-        return this._student;
-    }
-    // a test belongs to one course
-    // get course(){
-    //     this._course ||= this.test.course;
-
-    //     //a student has many DISTINCT courses
-    //     this.student.courses ||= new Map()
-        
-    //     // a mark belongs to both a student and a course
-    //     if (this.student.courses.has(this._course)) {
-    //         this.student.courses.get(this._course).push(this)
-    //     } else {
-    //         this.student
-    //     }
-
-    //     return this._course;
-    // }
-
-    get weightedMark(){
-        this._weightedMark ||= this.test.weight*this.mark
-        // Math.round(num * 100) / 100
-        return this._weightedMark
-    }
- 
-
-
 }
 
 
 export default {
-    Mark, 
-    MarkController
+    Mark
 }

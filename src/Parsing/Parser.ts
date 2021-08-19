@@ -5,8 +5,9 @@ import { measure } from './decorators/measure';
 import { StringCleaning } from './modules/StringCleaning';
 import { AppFileTypes } from './namespaces/AppFileTypes';
 
-import type { Model, Record } from '../models/schema';
+import type { Model, Record, RecordForModel } from '../models/schema';
 
+import { Student } from '../models/Student'
 
 type Csv = typeof AppFileTypes.csv;
 type FilePath<T = Csv> = T extends string ? `${string}.${T}`: never; 
@@ -17,16 +18,16 @@ interface Table {
     records: any[];
 }
 
-export class CsvTableParser {
-  private model: Model;
+export class CsvTableParser<T extends Model, U extends RecordForModel<T> > {
+  private model: T;
 
-  public constructor(model: Model){
+  public constructor(model: T){
     this.model = model;
   }
 
-  getProperty<T, K extends keyof T>(t: T, k: K) {
-    return t[k];
-  }
+  // getProperty<T, K extends keyof T>(t: T, k: K) {
+  //   return t[k];
+  // }
 
   @measure
   public run(filePath: FilePath<Csv>): Promise<Table>{
@@ -36,7 +37,7 @@ export class CsvTableParser {
           const [ headersArray , rowStringsArray ] = this.read(rawData)
           this.clean(rowStringsArray);
           this.transform(rowStringsArray)
-          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[]}
+          const result = { headers: headersArray, records: rowStringsArray as unknown as U[]}
           resolve(result)
         })
     })
@@ -76,8 +77,9 @@ export class CsvTableParser {
     this.transformRowStringsToModelObjects(rowsStringsArray)
   }
   private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
-    const mapper = (rowString: string, i: number, arr: (string | Record)[]) => {
-      arr[i] = new this.model(...rowString.split(',') as [number, string])
+    const mapper = (rowString: string, i: number, arr: (string | Record )[]) => {
+      const ctorArg = rowString.split(',') as [any,any,any]
+      arr[i] = new this.model(...ctorArg)
     }
     rowsStringsArray.forEach(mapper) // mutates
   }
@@ -87,6 +89,8 @@ export default {
   CsvTableParser
 }
 
+
+// new CsvTableParser<typeof Student, Student>(Student)
 
 
 

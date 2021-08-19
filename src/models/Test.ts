@@ -1,86 +1,50 @@
-const Course = require("./Course");
+import { Course } from "./Course";
+import { Student } from "./Student";
+import { Mark } from "./Mark";
+import { UsePrimaryKeyedStatics } from '../abstract/BaseRecord'
 
+import type { PrimaryKey, Grade, ForeignKey } from './types'
 
-type Mark = any; 
-type Course = any;
-interface TestTableSchema {
-  id: PrimaryKey;
-  course_id: ForeignKey;
-  weight: number; //must add to 100
+export interface TestSchema {
+  id: PrimaryKey;         // PK
+  course_id: ForeignKey;  // FK
+  weight: number;         // Validate that: all weights of every Course.tests adds to 100
 }
-type ForeignKey = {
-  readonly id: number;
-} 
-
-
-// start student
-type PrimaryKey = number 
-// PrimaryKeyed<constructor>
-type PrimaryKeyed<T extends new () => {} > = {
-  all: () => T[],
-  index: {
-    has(k: PrimaryKey): k is PrimaryKey
-    get(k: PrimaryKey): T,
-    set(k: PrimaryKey, v: T): PrimaryKeyed<T>,
-  },
-  addKey(k: PrimaryKey): void;
+interface TestComputed {
+  marks: Mark[];          // has_many marks
+  course: Course;         // belongs_to_one course
 }
+type TestRecord = TestSchema & TestComputed;
 
-interface StudentTable {
-  id: unknown;
-  name: string;
-}
-interface StudentComputed {
-  marks: Mark; // join
-  totalAverage: number // for view
-  courses: Course; // for view
-}
-interface StudentSchema extends StudentTable, StudentComputed {}
+export class Test implements TestRecord {
+  public id: PrimaryKey;
+  public course_id: ForeignKey;
+  public weight: number;
 
+  private _marks!: Mark[];
+  private _course!: Course; 
+  public get marks(): Mark[] {
+    return this._marks;
+  }
+  public set marks(value: Mark[]) {
+    this._marks = value;
+  }
+  public get course(): Course {
+    return this._course;
+  }
+  public set course(value: Course) {
+    this._course = value;
+  }
 
-interface TestJoins {
-  _course; // belongs to a course
-  _marks; // has many marks belonging to myriad students
-  // functions to make the joins? Test.marks(a student)
-  // makeIndexRowmap
-}
-interface TestValidation {
-  validateTestWeights;
-}
-
-interface TestSchema extends TestTableSchema, TestJoins, TestValidation {}
-
-export default class Test implements TestSchema {
-  id;
-  course_id;
-  weight;
-
-  _course;
-  static indexToRowMap;
-
-  constructor(id, course_id, weight){
+  constructor(id: PrimaryKey, course_id: ForeignKey, weight: number){
       this.id = Number(id);
       this.course_id = Number(course_id);
       this.weight = Number(weight);
   }
 
-  // a test belongs to one course
-  get course(){
-    this._course ||= Course.indexToRowMap.get(this.course_id)
-    return this._course
-  }
-  
-  // validates that the weights of all tests of a course add to exactly 100
-  static validateTestWeights(){
-    const map = new Map(); // maps a course to all of its tests' cumulative weight
-    for (const test of [...Test.indexToRowMap.values()]) {
-      const thisTestsCourseId = test.course_id;
-      const thisTestsWeight = test.weight;
-      const oldAccumWeightForThisCourseId = map.get(thisTestsCourseId) ?? 0;
-      const newAccumWeightForThisCourseId = oldAccumWeightForThisCourseId + thisTestsWeight;
-      map.set(thisTestsCourseId, newAccumWeightForThisCourseId);
-    }
-    for (const [course_id, accumWeight] of map) if (accumWeight !== 100) return false;
-    return true;
-  }
 }
+
+export default {
+  Test
+}
+
