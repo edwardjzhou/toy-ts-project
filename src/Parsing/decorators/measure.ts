@@ -1,3 +1,4 @@
+// from https://blog.logrocket.com/a-practical-guide-to-typescript-decorators/
 import { performance } from "perf_hooks";
 export const measure = (
   target: Object,

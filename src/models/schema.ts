@@ -1,20 +1,20 @@
 import fs from 'fs';
 // import Course from './Course';
-import { Student, StudentController } from './Student';
+import { Student } from './Student';
+import { StudentController } from '../controllers/StudentController'
 // import Test from './Test';
 // import Mark from './Mark';
 
- 
-function hasPrimaryKey(arg: any): arg is Student {
-    return 'marks' in arg.prototype
+function isPrimaryKeyed(aModelClassInstance: any): aModelClassInstance is Student {
+    return 'id' in aModelClassInstance 
 }
 
+
+export type Mark = any; 
+export type Course = any;
 
 export type Record = Student //| Test | Mark | Course 
-export type RecordModels =  Record
-export type Model<T extends Record> = {
-  new (...args: any[]): T
-}
+export type Model = typeof Student
 
 type test = ConstructorParameters<typeof Student>
 type Controller =  StudentController// | CourseController | TestController | MarkController

@@ -7,7 +7,6 @@
  * tsc src/* --outDir dist --allowJs
  * node '/Users/edward/Desktop/hatchways_fullstack/dist/app.js' courses.csv students.csv tests.csv marks.csv output.json
 */
-
 import { StudentController } from './models/Student'
 // class App {  
 

@@ -1,22 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 
-import { measure } from './measure';
-import { StringCleaning } from './StringCleaning';
+import { measure } from './decorators/measure';
+import { StringCleaning } from './modules/StringCleaning';
+import { AppFileTypes } from './namespaces/AppFileTypes';
 
-import type { Model, Record } from '../models/schema'
-import { Student } from 'models/Student';
-namespace AppFileTypes {
-  export const csv = 'csv';
-}
+import type { Model, Record } from '../models/schema';
+
+
 type Csv = typeof AppFileTypes.csv;
-type FilePath<T> = T extends string ? `${string}.${T}`: never; 
-type CsvFilePath = FilePath<Csv>;
+type FilePath<T = Csv> = T extends string ? `${string}.${T}`: never; 
+export type CsvFilePath = FilePath<Csv>;
 type header = string;
-
-interface Table<T> {
+interface Table {
     headers: header[];
-    records: Record<T>[];
+    records: any[];
 }
 
 export class CsvTableParser {
@@ -31,7 +29,6 @@ export class CsvTableParser {
   }
 
   @measure
-  // @ts-ignore
   public run(filePath: FilePath<Csv>): Promise<Table>{
     return new Promise(resolve => { 
         fs.readFile(path.join(__dirname, filePath), 'utf8' , (err, rawData) => {
@@ -44,6 +41,7 @@ export class CsvTableParser {
         })
     })
   }
+
 
   public read(rawData: string): [header[], string[]] {
     const headersArray = this.readHeaders(rawData)
@@ -63,6 +61,7 @@ export class CsvTableParser {
   }
 
 
+
   public clean(rowsStringsArray: string[]): void {
     this.cleanRowStrings(rowsStringsArray)
   }
@@ -72,12 +71,13 @@ export class CsvTableParser {
   }
 
 
+
   public transform(rowsStringsArray: string[]): void {
     this.transformRowStringsToModelObjects(rowsStringsArray)
   }
   private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
     const mapper = (rowString: string, i: number, arr: (string | Record)[]) => {
-      arr[i] = new this.model(...rowString.split(','))
+      arr[i] = new this.model(...rowString.split(',') as [number, string])
     }
     rowsStringsArray.forEach(mapper) // mutates
   }
