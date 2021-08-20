@@ -19,7 +19,7 @@ import { Test } from './models/Test';
 
 class App {  
     migrate(){ 
-        if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args')
+        if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
         const coursesFilePath = process.argv[2],
         studentsFilePath = process.argv[3],
         testsFilePath = process.argv[4],
@@ -27,7 +27,7 @@ class App {
         outputFilePath = process.argv[6];
 
         const models = [Student, Course, Mark, Test];
-
+        console.log(Student.prototype.id)
 
         // Promise.all(pkedModels).then(
         //     console.log

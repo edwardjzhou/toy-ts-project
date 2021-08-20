@@ -3,7 +3,7 @@ import { UsePrimaryKeyedStatics } from '../abstract/BaseRecord';
 import type { PrimaryKey } from "./types";
 
 export interface CourseSchema {
-  id: PrimaryKey;
+  id: PrimaryKey; // PK
   name: string;
   teacher: string;
 }
@@ -29,7 +29,7 @@ export class Course extends UsePrimaryKeyedStatics() implements CourseRecord {
     this._totalWeight = value;
   }
 
-  public id: PrimaryKey;
+  public id: PrimaryKey; // PK
   public name: string;
   public teacher: string; 
   public constructor(id: PrimaryKey, name: string, teacher: string) {
