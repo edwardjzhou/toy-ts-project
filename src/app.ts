@@ -7,22 +7,41 @@
  * tsc src/* --outDir dist --allowJs
  * node '/Users/edward/Desktop/hatchways_fullstack/dist/app.js' courses.csv students.csv tests.csv marks.csv output.json
 */
-import { StudentController } from './models/Student'
-// class App {  
+// import { StudentController } from './models/Student'
+// import { CsvTableParser } from './parser/Parser'
 
-//   public readonly models: any[];
+import { Student } from './models/Student';
+import { Course } from './models/Course';
+import { Mark } from './models/Mark';
+import { Test } from './models/Test';
 
-//   constructor(parsers: any[], modelCtors: any[]){
-//     this.parsers = parsers
-//     this.modelCtors = modelCtors
-//   }
 
-//   read(){} // fs.readfile
-//   parse(){} // csv and ORM-ify
-//   compute(){} // joins and other computed props 
-//   validate(){} // validations like sum(score)=100
-//   viewReportcard(){} // return a josn obj1
-// }
+
+class App {  
+    migrate(){ 
+        if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args')
+        const coursesFilePath = process.argv[2],
+        studentsFilePath = process.argv[3],
+        testsFilePath = process.argv[4],
+        marksFilePath = process.argv[5],
+        outputFilePath = process.argv[6];
+
+        const models = [Student, Course, Mark, Test];
+
+
+        // Promise.all(pkedModels).then(
+        //     console.log
+        // )
+    }
+
+    join(){
+    }
+    
+    validate(){}
+
+}
+
+new App().migrate()
 
     // let result;
     // const areTestWeightsValid = Test.validateTestWeights(this.tests);

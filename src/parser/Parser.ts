@@ -18,10 +18,10 @@ interface Table {
     records: any[];
 }
 
-export class CsvTableParser<T extends Model, U extends RecordForModel<T> > {
-  private model: T;
+export class CsvTableParser {
+  private model: Model;
 
-  public constructor(model: T){
+  public constructor(model: Model){
     this.model = model;
   }
 
@@ -37,7 +37,7 @@ export class CsvTableParser<T extends Model, U extends RecordForModel<T> > {
           const [ headersArray , rowStringsArray ] = this.read(rawData)
           this.clean(rowStringsArray);
           this.transform(rowStringsArray)
-          const result = { headers: headersArray, records: rowStringsArray as unknown as U[]}
+          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[]}
           resolve(result)
         })
     })
@@ -77,11 +77,15 @@ export class CsvTableParser<T extends Model, U extends RecordForModel<T> > {
     this.transformRowStringsToModelObjects(rowsStringsArray)
   }
   private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
-    const mapper = (rowString: string, i: number, arr: (string | Record )[]) => {
-      const ctorArg = rowString.split(',') as [any,any,any]
-      arr[i] = new this.model(...ctorArg)
+    for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
+      //@ts-ignore
+      rowsStringsArray[idx] = new this.model(...rowString.split(','))
     }
-    rowsStringsArray.forEach(mapper) // mutates
+    // const mapper = (rowString: string, i: number, arr: (string | Record )[]) => {
+    //   const ctorArg = rowString.split(',') as [any,any,any]
+    //   arr[i] = new this.model(...ctorArg)
+    // }
+    // rowsStringsArray.forEach(mapper) // mutates
   }
 }
 

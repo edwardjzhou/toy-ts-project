@@ -1,5 +1,5 @@
-import { CsvTableParser } from '../Parsing/Parser'
-import type { CsvFilePath } from '../Parsing/Parser'
+import { CsvTableParser } from '../parser/Parser'
+import type { CsvFilePath } from '../parser/Parser'
 
 import { Model, Record, Schema } from 'models/schema';
 import type { PrimaryKey, ForeignKey,  } from '../models/types'
@@ -56,7 +56,7 @@ export const UseForeignKeyedStatics = () => class ForeignKeyedRecord extends Bas
 
 
 
-export const UsePrimaryKeyedStatics = <T extends {id: PrimaryKey}> (): any => {
+export const UsePrimaryKeyedStatics = <T extends {id: PrimaryKey}> () => {
   return class PrimaryKeyedRecord extends BaseRecord {
     public static override index: Map<PrimaryKey, T> = new Map()
     public static override get all(): T[] {

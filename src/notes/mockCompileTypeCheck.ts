@@ -1,3 +1,5 @@
+as T is type ASSERTIon not casting (treat x like T even if its NOT)
+
 //  SQL NOTES
 // FILTER (WHERE course_id=3)
 // ROUND()

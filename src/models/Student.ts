@@ -3,7 +3,6 @@ import { Course } from './Course';
 import { UsePrimaryKeyedStatics } from '../abstract/BaseRecord';
 import type { PrimaryKey } from './types'
 
-import { coursesFilePath, studentsFilePath } from './schema';
 export interface StudentSchema {
   id: PrimaryKey;
   name: string;
@@ -19,13 +18,10 @@ type StudentRecord = StudentSchema & StudentComputed
 // Student subs AppRecord ?
 // any record can either be foreign keyed, primary keyed, or primary and foreign keyed
 export class Student extends UsePrimaryKeyedStatics() implements StudentRecord {
-// export class Student extends UsePrimaryKeyedStatics() implements StudentRecord {
-
   // accessors to joins and computed values; dependent on other tables
   private _marks!: Mark[]; // has-many
   private _courses!: Course[]; // has-many via marks table := COURSES.find(  MARKS.find(student_id).course_id  ) 
   private _totalAverage!: number; // computed
-
   public get marks(): Mark[] {
     return this._marks;
   }
@@ -59,8 +55,12 @@ export default {
 }
 
 
+
+
+
+
+
 // const Edward = new Student(1, "Edward")
-// type asdf = typeof Edward
 
 // Student.load().then( () => {
 //     console.log(Student.all)

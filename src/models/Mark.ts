@@ -31,7 +31,7 @@ export class Mark {
     }
     public set student(value: Student) {
       this._student = value;
-  }
+    }
     public get weightedMark(): number {
       let current; 
       current ??= this.test?.weight * this.mark;
