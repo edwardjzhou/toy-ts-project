@@ -1,10 +1,7 @@
 import { Course } from "./Course";
-import { Student } from "./Student";
 import { Mark } from "./Mark";
-import { UsePrimaryKeyedStatics } from '../abstract/BaseRecord'
-
-import type { PrimaryKey, Grade, ForeignKey } from './types'
-
+import { withPrimaryKey } from './BaseRecord'
+import type { PrimaryKey, Grade, ForeignKey } from './schema'
 export interface TestSchema {
   id: PrimaryKey;         // PK
   course_id: ForeignKey;  // FK
@@ -15,36 +12,35 @@ interface TestComputed {
   course: Course;         // belongs_to_one course
 }
 type TestRecord = TestSchema & TestComputed;
-
-export class Test extends UsePrimaryKeyedStatics() implements TestRecord {
-  private _marks!: Mark[];
+export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
+  private _marks: Mark[] = [];
   private _course!: Course; 
-  public get marks(): Mark[] { // wait for marks to join me
+  public get marks(): Mark[] {  // Passively wait for marks to join me
     return this._marks;
   }
   public set marks(value: Mark[]) {
     this._marks = value;
   }
-  public get course(): Course { // i need to join courses
+  public get course(): Course { // Actively need to join courses
     return this._course;
   }
-  public set course(value: Course) {
+  private set course(value: Course) {
     this._course = value;
   }
-
-  public id: PrimaryKey;
-  public course_id: ForeignKey;
-  public weight: number;
+  public readonly id: PrimaryKey;
+  public readonly course_id: ForeignKey;
+  public readonly weight: number;
   public constructor(id: PrimaryKey, course_id: ForeignKey, weight: number){
-    super(id)
+    super()
     this.id = Number(id);
     this.course_id = Number(course_id);
     this.weight = Number(weight);
+    Course.find(this.course_id).then(foundCourse => {
+      foundCourse.tests = [...foundCourse.tests, this]
+      this.course = <Course>foundCourse
+    })
   }
-
 }
 
-export default {
-  Test
-}
+export default { Test }
 

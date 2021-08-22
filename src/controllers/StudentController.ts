@@ -1,9 +1,7 @@
-import { BaseController } from "../abstract/BaseController";
-import { Student } from '../models/Student'
-
-import type { StudentSchema } from '../models/Student'
-import type { PrimaryKey } from "../models/types";
-
+import { BaseController } from "./BaseController";
+import { Student } from './../models/Student'
+import type { StudentSchema } from './../models/Student'
+import type { PrimaryKey } from "./../models/schema";
 export class StudentController extends BaseController<Student> {
   public create(s: Student): boolean
   public create(id: PrimaryKey, name: string): boolean

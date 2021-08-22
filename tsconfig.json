@@ -7,7 +7,14 @@
         "esModuleInterop": true,
         "outDir": "dist",
         "baseUrl": "src",
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "paths": {
+            "model/*": ["./model/*"]
+        },
+        "moduleResolution": "node",
+        "pretty": true,
+        "emitDecoratorMetadata" : true,
+        "noEmit": false
     },
     "files": [
         "src/app.ts"

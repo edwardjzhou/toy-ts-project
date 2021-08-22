@@ -1,5 +1,7 @@
 {
   "devDependencies": {
     "@types/node": "^16.4.13"
-  }
+  },
+  "main": "",
+  "types": ""
 }

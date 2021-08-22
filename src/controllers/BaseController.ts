@@ -5,6 +5,7 @@ export abstract class BaseController<T> {
     public abstract update(a: any): any;
 }
 
+
 export default {
     BaseController
 }
