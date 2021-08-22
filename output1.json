@@ -3,17 +3,71 @@
     {
       "id": 1,
       "name": "A",
-      "courses": []
+      "totalAverage": 73,
+      "courses": [
+        {
+          "id": 1,
+          "name": "Biology",
+          "teacher": "Mr. D",
+          "courseAverage": 90.1
+        },
+        {
+          "id": 2,
+          "name": "History",
+          "teacher": "Mrs. P",
+          "courseAverage": 51.8
+        },
+        {
+          "id": 3,
+          "name": "Math",
+          "teacher": "Mrs. C",
+          "courseAverage": 74.2
+        }
+      ]
     },
     {
       "id": 2,
       "name": "B",
-      "courses": []
+      "totalAverage": 65,
+      "courses": [
+        {
+          "id": 1,
+          "name": "Biology",
+          "teacher": "Mr. D",
+          "courseAverage": 50.1
+        },
+        {
+          "id": 3,
+          "name": "Math",
+          "teacher": "Mrs. C",
+          "courseAverage": 74.2
+        }
+      ]
     },
     {
       "id": 3,
       "name": "C",
-      "courses": []
+      "totalAverage": 73,
+      "courses": [
+        {
+          "id": 1,
+          "name": "Biology",
+          "teacher": "Mr. D",
+          "courseAverage": 90.1
+        },
+        {
+          "id": 2,
+          "name": "History",
+          "teacher": "Mrs. P",
+          "courseAverage": 51.8
+        },
+        {
+          "id": 3,
+          "name": "Math",
+          "teacher": "Mrs. C",
+          "courseAverage": 74.2
+        }
+      ]
     }
   ]
 }

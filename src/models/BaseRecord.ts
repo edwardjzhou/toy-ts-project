@@ -65,7 +65,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
         this.index.set(record.id, record)
       }
     }
-    public static async find(id: PrimaryKey): Promise<T> | never {
+    public static find(id: PrimaryKey): Promise<T> | never {
       switch(this.index.has(id)) {
         case true: return Promise.resolve(<T>this.index.get(id))
         case false: 
