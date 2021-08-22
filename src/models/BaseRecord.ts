@@ -32,10 +32,10 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends Abs
       this.isLoaded = true; 
     }
     public static isLoaded: boolean = false;
-    public static find<
+    public static async find<
       FKName extends ForeignKeyPropNamesInSchema<T>,
       FKValue extends T[FKName]
-    > (prop: FKName, value: FKValue): any {
+    > (prop: FKName, value: FKValue): Promise<T | undefined> {
       return this.index.find(record => record[prop] === value)
     }
   }
@@ -65,7 +65,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
         this.index.set(record.id, record)
       }
     }
-    public static find(id: PrimaryKey): Promise<T> | never {
+    public static async find(id: PrimaryKey): Promise<T> | never {
       switch(this.index.has(id)) {
         case true: return Promise.resolve(<T>this.index.get(id))
         case false: 

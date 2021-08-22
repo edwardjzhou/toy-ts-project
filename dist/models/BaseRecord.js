@@ -6,22 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.withPrimaryKey = exports.withoutPrimaryKey = exports.BaseRecord = void 0;
 const events_1 = __importDefault(require("events"));
 const Parser_1 = require("./../parser/Parser");
-class BaseRecord extends events_1.default.EventEmitter {
-    // emitHello(name: string): void {
-    //   this.on('hello', () => {
-    //     console.log(23413213)
-    //   })
-    //   this.emit('hello', name);
-    //     console.log(23413213)
-    //     console.log(23413213)
-    // }
-    static LiterallyAllRecords = {};
+class BaseRecord {
+    static LiterallyAllRecords = new Map();
     static index; // overridden
     static get all() { return void 0; }
     ; // overridden
     static set all(args) { }
     ; // overridden
-    constructor() { super(); }
 }
 exports.BaseRecord = BaseRecord;
 const withoutPrimaryKey = (Base) => {
@@ -34,15 +25,14 @@ const withoutPrimaryKey = (Base) => {
             this.index = records;
         }
         static async load(fp = `/../${this.name.toLowerCase()}s.csv`) {
-            if (this.isLoaded === true)
+            if (this.isLoaded)
                 return Promise.resolve(void 0);
-            return await new Parser_1.CsvTableParser(this).run(fp).then(({ headers, records }) => {
-                this.all = records;
-                this.isLoaded = true;
-            });
+            const { headers, records } = await new Parser_1.CsvTableParser(this).run(fp);
+            this.all = records;
+            this.isLoaded = true;
         }
         static isLoaded = false;
-        static find(prop, value) {
+        static async find(prop, value) {
             return this.index.find(record => record[prop] === value);
         }
     }
@@ -50,18 +40,19 @@ const withoutPrimaryKey = (Base) => {
 };
 exports.withoutPrimaryKey = withoutPrimaryKey;
 // HAS a primary key; could also have foreign keys
+const MODEL_DONE_LOADING = Symbol('@@DONE');
 const withPrimaryKey = () => {
     return class extends BaseRecord {
         static async load(fp = `../../${this.name.toLowerCase()}s.csv`) {
             if (this.isLoaded === true)
                 return Promise.resolve(void 0);
-            return await new Parser_1.CsvTableParser(this).run(fp).then(({ headers, records }) => {
-                this.all = records;
-                this.isLoaded = true;
-                // this.emit
-            });
+            const { headers, records } = await new Parser_1.CsvTableParser(this).run(fp);
+            this.all = records;
+            super.LiterallyAllRecords.set(this, records);
+            this.isLoaded = true;
+            this.isLoadedEvent.emit(MODEL_DONE_LOADING);
         }
-        // public static isLoadedEvent: events.EventEmitter = new this.EventEmitter
+        static isLoadedEvent = new events_1.default.EventEmitter();
         static isLoaded = false;
         static index = new Map();
         static get all() {
@@ -70,6 +61,18 @@ const withPrimaryKey = () => {
         static set all(records) {
             for (const record of records) {
                 this.index.set(record.id, record);
+            }
+        }
+        static async find(id) {
+            switch (this.index.has(id)) {
+                case true: return Promise.resolve(this.index.get(id));
+                case false:
+                    switch (this.isLoaded) {
+                        case true: throw Error('relational consistency violated');
+                        case false: return new Promise(resolve => {
+                            this.isLoadedEvent.once(MODEL_DONE_LOADING, () => resolve(this.find(id)));
+                        });
+                    }
             }
         }
     };

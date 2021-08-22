@@ -14,7 +14,8 @@
         "moduleResolution": "node",
         "pretty": true,
         "emitDecoratorMetadata" : true,
-        "noEmit": false
+        "noEmit": false,
+        "declaration": true
     },
     "files": [
         "src/app.ts"

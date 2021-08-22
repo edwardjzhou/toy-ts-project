@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CsvTableParser = void 0;
 const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const measure_1 = require("./decorators/measure");
 const StringCleaning_1 = require("./modules/StringCleaning");
 class CsvTableParser {
@@ -24,7 +23,8 @@ class CsvTableParser {
     }
     run(filePath) {
         return new Promise(resolve => {
-            fs_1.default.readFile(path_1.default.join(__dirname, filePath), 'utf8', (err, rawData) => {
+            // path.join(__dirname, filePath)
+            fs_1.default.readFile(filePath, 'utf8', (err, rawData) => {
                 if (err)
                     throw err;
                 const [headersArray, rowStringsArray] = this.read(rawData);

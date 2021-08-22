@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Test = void 0;
+const Course_1 = require("./Course");
 const BaseRecord_1 = require("./BaseRecord");
 class Test extends BaseRecord_1.withPrimaryKey() {
-    _marks;
+    _marks = [];
     _course;
     get marks() {
         return this._marks;
@@ -14,10 +15,8 @@ class Test extends BaseRecord_1.withPrimaryKey() {
     get course() {
         return this._course;
     }
-    // Promise<Course>
     set course(value) {
-        // value
-        // this._course = value;
+        this._course = value;
     }
     id;
     course_id;
@@ -27,7 +26,10 @@ class Test extends BaseRecord_1.withPrimaryKey() {
         this.id = Number(id);
         this.course_id = Number(course_id);
         this.weight = Number(weight);
-        // this.course = Course.find(this.course_id)
+        Course_1.Course.find(this.course_id).then(foundCourse => {
+            foundCourse.tests = [...foundCourse.tests, this];
+            this.course = foundCourse;
+        });
     }
 }
 exports.Test = Test;

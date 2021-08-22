@@ -31,16 +31,15 @@ export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
   public readonly course_id: ForeignKey;
   public readonly weight: number;
   public constructor(id: PrimaryKey, course_id: ForeignKey, weight: number){
-    super()
+    super();
     this.id = Number(id);
     this.course_id = Number(course_id);
     this.weight = Number(weight);
     Course.find(this.course_id).then(foundCourse => {
-      foundCourse.tests = [...foundCourse.tests, this]
-      this.course = <Course>foundCourse
-    })
+      foundCourse.tests = [...foundCourse.tests, this];
+      this.course = <Course>foundCourse;
+    });
   }
 }
-
-export default { Test }
+export default Test
 

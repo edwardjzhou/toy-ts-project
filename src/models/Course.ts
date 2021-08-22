@@ -39,7 +39,7 @@ export class Course extends withPrimaryKey<CourseRecord>() implements CourseReco
     this.name = name;
     this.teacher = teacher;
   }
-  // is sum(course.tests) = 100 for every course
+  // for every course, is sum(course.tests) = 100 
   static areTestWeightsValid(){
     for (const course of this.all) {
       if (course.totalWeight !== 100) return false;
@@ -47,7 +47,7 @@ export class Course extends withPrimaryKey<CourseRecord>() implements CourseReco
     return true;
   }
 }
-export default { Course }
+export default Course
 
 
 // const c = new Course(1,'math101','edward')

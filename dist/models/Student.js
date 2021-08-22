@@ -4,20 +4,14 @@ exports.Student = void 0;
 const BaseRecord_1 = require("./BaseRecord");
 class Student extends BaseRecord_1.withPrimaryKey() {
     // accessors to joins and computed values; dependent on other tables
-    _marks; // has-many
-    _courses; // has-many via marks table := COURSES.find(  MARKS.find(student_id).course_id  ) 
+    _marks = []; // has-many
     _totalAverage; // computed
     get marks() {
         return this._marks;
     }
     set marks(value) {
+        this._totalAverage = this.marks.reduce((acc, mark) => acc + mark.mark, 0);
         this._marks = value;
-    }
-    get courses() {
-        return this._courses;
-    }
-    set courses(value) {
-        this._courses = value;
     }
     get totalAverage() {
         return this._totalAverage;
@@ -36,8 +30,7 @@ class Student extends BaseRecord_1.withPrimaryKey() {
 }
 exports.Student = Student;
 exports.default = { Student };
-const Edward = new Student(156, "Edward").emit('hello');
-debugger
+// const Edward = new Student(156, "Edward")
 // Student.load().then( () => {
 //     console.log(Student.all)
 //     console.log(Object.getPrototypeOf(Object.getPrototypeOf(Student)).isLoaded)

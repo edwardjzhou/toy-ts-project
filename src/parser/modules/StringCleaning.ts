@@ -10,11 +10,11 @@ export module StringCleaning {
 
     // ['2,History, Mrs. P'] mutates to ['2,History,Mrs. P']
     export function removeSpacesAfterCommasFromStringArray(array: string[]){
-        const arrayLength = array.length
+        const arrayLength = array.length;
         for (let i = 0; i < arrayLength; i++){
             let replacement = '';
             const current = array[i]
-            const stringLength = current.length
+            const stringLength = current.length;
             for (let j = 0; j < stringLength ; j++) {
                 let right = j;
                 while (current[j] === ',' && current[right+1] === ' ') right++;
