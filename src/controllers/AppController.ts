@@ -13,10 +13,10 @@ class App {
     #coursesController = new CoursesController();
     #marksController = new MarksController();
 
-    public async migrate(): Promise<void> { 
-        return await this.loadCsvRecords();
+    public migrate(): Promise<void> { 
+        return this.loadCsvRecords();
     }
-    private async loadCsvRecords(): Promise<void> {
+    private loadCsvRecords(): Promise<any> {
          if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
         const coursesFilePath = process.argv[2],
         studentsFilePath = process.argv[3],
@@ -25,12 +25,12 @@ class App {
         outputFilePath = process.argv[6];
         const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath];
         const models = [Course, Student, Test, Mark];
-        const allLoads = models.map((model, i) => model.load(paths[i] as any));
-        await Promise.all(allLoads);
+        const allLoads = models.map((model, i) => model.load(paths[i] as any)); // first promise from BaseRecord is created
+        return Promise.all(allLoads); // second promise 
     }
 
     public render(){
-      console.log(Student.all, Mark.all, Test.all, Course.all)
+      // console.log(Student.all, Mark.all, Test.all, Course.all)
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"

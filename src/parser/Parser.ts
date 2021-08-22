@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'path';
 import { measure } from './decorators/measure';
 import { StringCleaning } from './modules/StringCleaning';
 import { AppFileTypes } from './namespaces/AppFileTypes';
@@ -20,9 +19,8 @@ export class CsvTableParser {
     this.model = model;
   }
   @measure
-  public run(filePath: FilePath<Csv>): Promise<Table>{
+  public run(filePath: FilePath<Csv>): Promise<Table>{    
     return new Promise(resolve => { 
-      // path.join(__dirname, filePath)
         fs.readFile(filePath, 'utf8' , (err, rawData) => {
           if (err) throw err;
           const [ headersArray , rowStringsArray ] = this.read(rawData);
@@ -66,6 +64,7 @@ export class CsvTableParser {
     for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
       //@ts-ignore
       rowsStringsArray[idx] = new this.model(...rowString.split(','));
+      
     }
   }
 }
