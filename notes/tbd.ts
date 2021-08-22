@@ -39,3 +39,22 @@
 // // // Pass
 // // const color4: RGBColor = rgb(100);
 // // const color5: RGBColor = rgb(255);
+
+
+// // Generic definition somewhere in utils
+// type Distinct<T, DistinctName> = T & { __TYPE__: DistinctName };
+
+// // Possible usages
+// type Hours = Distinct<number, "Hours">;
+// type Minutes = Distinct<number, "Minutes">;
+// type Seconds = Distinct<number, "Seconds">;
+
+// function validateHours(x: number): Hours | undefined {
+//   if (x >= 0 && x <= 23) return x as Hours;
+// }
+// function validateMinutes(x: number): Minutes | undefined {
+//   if (x >= 0 && x <= 59) return x as Minutes;
+// }
+// function validateSeconds(x: number): Seconds | undefined {
+//   if (x >= 0 && x <= 59) return x as Seconds;
+// }

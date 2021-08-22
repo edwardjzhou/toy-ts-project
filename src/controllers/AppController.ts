@@ -13,11 +13,10 @@ class App {
     #coursesController = new CoursesController();
     #marksController = new MarksController();
 
-    public migrate(){ 
-        this.loadCsvRecords();
-        this.joinAndComputeRecords();
+    public async migrate(): Promise<void> { 
+        return await this.loadCsvRecords();
     }
-    private async loadCsvRecords(){
+    private async loadCsvRecords(): Promise<void> {
          if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
         const coursesFilePath = process.argv[2],
         studentsFilePath = process.argv[3],
@@ -29,10 +28,9 @@ class App {
         const allLoads = models.map((model, i) => model.load(paths[i] as any));
         await Promise.all(allLoads);
     }
-    private joinAndComputeRecords(): any{
-    }
 
-    public render(): void{
+    public render(){
+      console.log(Student.all, Mark.all, Test.all, Course.all)
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"
@@ -51,9 +49,11 @@ class App {
           };
       }
       this.#result = JSON.stringify(this.#result, null, 2);
-      fs.writeFile('./../output1.json', <string>this.#result, err => {
+      console.log(this.#result)
+      fs.writeFile('./output1.json', <string>this.#result, (err) => {
         if (err) throw err
       });
+      return this.#result;
     }
 
     constructor(){

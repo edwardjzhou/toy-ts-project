@@ -12,5 +12,6 @@ import { AppControl } from './controllers/AppController'
 
 
 const principalsApp = AppControl.create()
-AppControl.update(principalsApp)
-AppControl.show(principalsApp)
+AppControl.update(principalsApp).then( () => {
+    AppControl.show(principalsApp)
+})

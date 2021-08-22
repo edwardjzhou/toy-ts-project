@@ -1,3 +1,5 @@
+import { EventEmitter, once } from 'events'
+
 import { Course } from "./Course";
 import { Mark } from "./Mark";
 import { withPrimaryKey } from './BaseRecord'

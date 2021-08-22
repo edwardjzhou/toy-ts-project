@@ -17,7 +17,6 @@ declare const Mark_base: ((abstract new (...args: any[]) => {}) & {
     all: MarkRecord[];
     load(fp?: `${string}.csv`): Promise<void>;
     isLoaded: boolean;
-    find<FKName extends import("./schema").ForeignKeyPropNamesInSchema<MarkRecord>, FKValue extends MarkRecord[FKName]>(prop: FKName, value: FKValue): Promise<MarkRecord | undefined>;
 }) & typeof BaseRecord;
 export declare class Mark extends Mark_base implements MarkRecord {
     private _weightedMark;
@@ -34,7 +33,4 @@ export declare class Mark extends Mark_base implements MarkRecord {
     readonly mark: Grade;
     constructor(test_id: ForeignKey, student_id: ForeignKey, mark: Grade);
 }
-declare const _default: {
-    Mark: typeof Mark;
-};
-export default _default;
+export default Mark;

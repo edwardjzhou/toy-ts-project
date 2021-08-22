@@ -3,7 +3,6 @@
         "module": "commonjs",
         "target": "esnext",
         "strict": true,
-        // "strict": false,
         "esModuleInterop": true,
         "outDir": "dist",
         "baseUrl": "src",

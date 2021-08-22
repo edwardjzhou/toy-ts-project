@@ -31,6 +31,8 @@ export class StudentsController extends BaseController<Student> {
     const students = Student.all.sort((a,b) => a.id > b.id ? 1: (a.id < b.id ? -1: 0));
     return students;
   }
+  //a student has many courses THROUGH many marks THROUGH belongs_to tests; 
+  // THROUGH associations are not in my models and the controller deals with it
   public show({ id, name, totalAverage }: Partial<Student>): Partial<Student>{
     const student = {
       id: id,

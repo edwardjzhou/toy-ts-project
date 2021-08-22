@@ -1,4 +1,4 @@
-import events from 'events'
+import { EventEmitter, once } from 'events'
 import { CsvTableParser } from './../parser/Parser'
 import type { CsvFilePath } from './../parser/Parser'
 import type { 
@@ -16,6 +16,9 @@ export abstract class BaseRecord {
     public static set all(args: any){}; // overridden
 }
 
+
+const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
+
 export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends AbstractConstructor<BaseRecord>>(Base: U) => {
   abstract class WithoutPrimaryKeyStatics extends Base {
     public static index: T[] = [];
@@ -23,7 +26,7 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends Abs
       return this.index;
     }
     public static set all(records: T[]) {
-        this.index = records;
+      this.index = records;
     }
     public static async load(fp: CsvFilePath = `/../${this.name.toLowerCase()}s.csv`): Promise<void>{
       if (this.isLoaded) return Promise.resolve(void 0);
@@ -32,29 +35,33 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends Abs
       this.isLoaded = true; 
     }
     public static isLoaded: boolean = false;
-    public static async find<
-      FKName extends ForeignKeyPropNamesInSchema<T>,
-      FKValue extends T[FKName]
-    > (prop: FKName, value: FKValue): Promise<T | undefined> {
-      return this.index.find(record => record[prop] === value)
-    }
+    // public static async find<
+    //   FKName extends ForeignKeyPropNamesInSchema<T>,
+    //   FKValue extends T[FKName]
+    // > (prop: FKName, value: FKValue): Promise<T | undefined> {
+    //   return this.index.find(record => record[prop] === value)
+    // }
   }
   return WithoutPrimaryKeyStatics
 }
 
 // HAS a primary key; could also have foreign keys
-const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
 export const withPrimaryKey = <T extends PKSchema> () => {
   return class extends BaseRecord{
     public static async load(fp: CsvFilePath = `../../${this.name.toLowerCase()}s.csv`): Promise<void>{
-      if (this.isLoaded === true) return Promise.resolve(void 0)
+      if (this.isLoaded) return Promise.resolve(void 0)
       const { headers, records } = await new CsvTableParser(<any>this).run(fp);
       this.all = records;
       super.LiterallyAllRecords.set(<any>this, <any>records)
       this.isLoaded = true; 
-      this.isLoadedEvent.emit(MODEL_DONE_LOADING);
+      // nextTick doesnt work here since Parser.load() created a promise before 
+      // any this.find() promise waiting on Parser.load()'s promise to resolve    
+      // ex: (a mark tries to find a student Student.find(mark.student_id))
+      // but student doesnt exist so we wait on a promise that is resolved
+      // synchronously from a cb fired isLoadedEvent
+      this.isLoadedEvent.emit(MODEL_DONE_LOADING)
     }
-    public static isLoadedEvent: events.EventEmitter = new events.EventEmitter();
+    public static isLoadedEvent: EventEmitter = new EventEmitter();
     public static isLoaded: boolean = false;
     public static override index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static override get all(): T[] {
@@ -71,30 +78,19 @@ export const withPrimaryKey = <T extends PKSchema> () => {
         case false: 
           switch(this.isLoaded) {
             case true: throw Error('relational consistency violated');
-            case false: return new Promise(resolve => {
-              this.isLoadedEvent.once(MODEL_DONE_LOADING, () => resolve(this.find(id)))
-            })
+            case false: 
+              // await once(this.isLoadedEvent, MODEL_DONE_LOADING) 
+              // return Promise.resolve(<T>this.index.get(id))
+              return new Promise(resolve => {
+                this.isLoadedEvent.once(MODEL_DONE_LOADING, ()=> {
+                  resolve(<T>this.index.get(id))
+                })
+              })
+
+            
           }
       }
     }
   }
 }
 export default { BaseRecord, withoutPrimaryKey, withPrimaryKey }
-
-// // Generic definition somewhere in utils
-type Distinct<T, DistinctName> = T & { __TYPE__: DistinctName };
-
-// // Possible usages
-type Hours = Distinct<number, "Hours">;
-// type Minutes = Distinct<number, "Minutes">;
-// type Seconds = Distinct<number, "Seconds">;
-
-// function validateHours(x: number): Hours | undefined {
-//   if (x >= 0 && x <= 23) return x as Hours;
-// }
-// function validateMinutes(x: number): Minutes | undefined {
-//   if (x >= 0 && x <= 59) return x as Minutes;
-// }
-// function validateSeconds(x: number): Seconds | undefined {
-//   if (x >= 0 && x <= 59) return x as Seconds;
-// }

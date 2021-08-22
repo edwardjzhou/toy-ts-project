@@ -17,7 +17,6 @@ const fs_1 = __importDefault(require("fs"));
 const measure_1 = require("./decorators/measure");
 const StringCleaning_1 = require("./modules/StringCleaning");
 class CsvTableParser {
-    model;
     constructor(model) {
         this.model = model;
     }
@@ -75,7 +74,4 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], CsvTableParser.prototype, "run", null);
 exports.CsvTableParser = CsvTableParser;
-exports.default = {
-    CsvTableParser
-};
-// https://2ality.com/2019/11/nodejs-streams-async-iteration.html#recap%3A-asynchronous-iteration-and-asynchronous-generators
+exports.default = { CsvTableParser };
