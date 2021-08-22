@@ -3,7 +3,7 @@
     {
       "id": 1,
       "name": "A",
-      "totalAverage": 73,
+      "totalAverage": 72.03,
       "courses": [
         {
           "id": 1,
@@ -28,7 +28,7 @@
     {
       "id": 2,
       "name": "B",
-      "totalAverage": 65,
+      "totalAverage": 62.15,
       "courses": [
         {
           "id": 1,
@@ -47,7 +47,7 @@
     {
       "id": 3,
       "name": "C",
-      "totalAverage": 73,
+      "totalAverage": 72.03,
       "courses": [
         {
           "id": 1,

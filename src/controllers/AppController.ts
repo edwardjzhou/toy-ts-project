@@ -9,12 +9,12 @@ import CoursesController from './CoursesController';
 
 class App {  
     #result: unknown; 
-    #studentsController = new StudentsController();
-    #coursesController = new CoursesController();
-    #marksController = new MarksController();
+    readonly #studentsController = new StudentsController();
+    readonly #coursesController = new CoursesController();
+    readonly #marksController = new MarksController();
 
-    public migrate(): Promise<void> { 
-        return this.loadCsvRecords();
+    public migrate(): Promise<this> { 
+        return this.loadCsvRecords().then(() => this);
     }
     private loadCsvRecords(): Promise<any> {
          if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
@@ -25,8 +25,8 @@ class App {
         outputFilePath = process.argv[6];
         const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath];
         const models = [Course, Student, Test, Mark];
-        const allLoads = models.map((model, i) => model.load(paths[i] as any)); // first promise from BaseRecord is created
-        return Promise.all(allLoads); // second promise 
+        const allLoads = models.map((model, i) => model.load(paths[i] as any)); 
+        return Promise.all(allLoads); 
     }
 
     public render(){
@@ -55,12 +55,6 @@ class App {
       });
       return this.#result;
     }
-
-    constructor(){
-      this.#studentsController = new StudentsController();
-      this.#coursesController = new CoursesController();
-      this.#marksController = new MarksController();
-    }
 }
 
 class AppController {
@@ -70,8 +64,10 @@ class AppController {
   public show(app: App){
     return app.render();
   }
-  public update(app: App){
+  public update(app: App): Promise<App> {
     return app.migrate();
   } 
 }
-export const AppControl = new AppController();
+export const AppControllerSingleton = new AppController();
+export const update = AppController.prototype.update 
+export const show = AppController.prototype.show 

@@ -1,5 +1,4 @@
 import { EventEmitter, once } from 'events'
-
 import { Mark } from './Mark';
 import { withPrimaryKey } from './BaseRecord';
 import type { PrimaryKey } from './schema';
@@ -19,9 +18,17 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
   public get marks(): Mark[] {
     return this._marks;
   }
-  public set marks(value: Mark[]) {
-    this._totalAverage = Math.round(this.marks.reduce((acc, mark) => acc + <number>mark.mark, 0) / this.marks.length);
-    this._marks = value;
+  public set marks(marks: Mark[]) {
+    let sumWeightedMarks = 0;
+    let sumWeights = 0;
+    for (const mark of marks ){
+      sumWeightedMarks += mark.weightedMark
+      sumWeights += mark.test.weight
+    }
+    const equivalentNumTests = sumWeights / 100;
+    const exactAverageTotalWeightedMarks = sumWeightedMarks / equivalentNumTests;
+    this._totalAverage = Math.round(exactAverageTotalWeightedMarks * 100) / 100;
+    this._marks = marks;
   }
   public get totalAverage(): number {
     return this._totalAverage;

@@ -16,14 +16,13 @@ export abstract class BaseRecord {
     public static set all(args: any){}; // overridden
 }
 
-const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
-export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends AbstractConstructor<BaseRecord>>(Base: U) => {
-  abstract class WithoutPrimaryKeyStatics extends Base {
-    public static index: T[] = [];
-    public static get all(): T[] {
+export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema>() => {
+  return class extends BaseRecord {
+    public static override index: T[] = [];
+    public static override get all(): T[] {
       return this.index;
     }
-    public static set all(records: T[]) {
+    public static override set all(records: T[]) {
       this.index = records;
     }
     public static async load(fp: CsvFilePath = `/../${this.name.toLowerCase()}s.csv`): Promise<void>{
@@ -40,10 +39,9 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema, U extends Abs
       return this.index.find(record => record[prop] === value)
     }
   }
-  return WithoutPrimaryKeyStatics
 }
 
-// HAS a primary key; could also have foreign keys
+const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
 export const withPrimaryKey = <T extends PKSchema> () => {
   return class extends BaseRecord{
     public static async load(fp: CsvFilePath = `../../${this.name.toLowerCase()}s.csv`): Promise<void>{

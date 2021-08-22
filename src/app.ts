@@ -7,11 +7,8 @@
  * to compile: 1. tsc 2. the below
  * ts-node 'src/app.ts' courses.csv students.csv tests.csv marks.csv output.json
 */
-import { AppControl } from './controllers/AppController'
 
+import { AppControllerSingleton as app, update, show } from './controllers/AppController'
 
-
-const principalsApp = AppControl.create()
-AppControl.update(principalsApp).then( () => {
-    AppControl.show(principalsApp)
-})
+const principalsApp = app.create();
+update(principalsApp).then(show);

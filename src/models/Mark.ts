@@ -13,7 +13,7 @@ interface MarkComputed {
     student: Student;    // belongs-to-one
 }
 type MarkRecord = MarkSchema & MarkComputed;
-export class Mark extends withoutPrimaryKey<MarkRecord, typeof BaseRecord>(BaseRecord) implements MarkRecord {
+export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord {
     // joins and computed
     private _weightedMark!: number;  // computed for view calculation: for course of Student(a student).courses => avg(mark)
     private _test!: Test;            // FK
