@@ -1,9 +1,9 @@
-import { EventEmitter, once } from 'events'
 
 import { Course } from "./Course";
 import { Mark } from "./Mark";
 import { withPrimaryKey } from './BaseRecord'
 import type { PrimaryKey, Grade, ForeignKey } from './schema'
+import type { EventEmitter, once } from 'node:events'
 export interface TestSchema {
   id: PrimaryKey;         // PK
   course_id: ForeignKey;  // FK

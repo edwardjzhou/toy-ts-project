@@ -3,13 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Course = void 0;
 const BaseRecord_1 = require("./BaseRecord");
 class Course extends BaseRecord_1.withPrimaryKey() {
-    constructor(id, name, teacher) {
-        super();
-        this._tests = []; // has_many
-        this.id = Number(id);
-        this.name = name;
-        this.teacher = teacher;
-    }
+    _tests = []; // has_many
+    _totalWeight; // computed for validating and then for  view
     get tests() {
         return this._tests;
     }
@@ -26,6 +21,15 @@ class Course extends BaseRecord_1.withPrimaryKey() {
     }
     set totalWeight(value) {
         this._totalWeight = value;
+    }
+    id;
+    name;
+    teacher;
+    constructor(id, name, teacher) {
+        super();
+        this.id = Number(id);
+        this.name = name;
+        this.teacher = teacher;
     }
     // for every course, is sum(course.tests) = 100 
     static areTestWeightsValid() {

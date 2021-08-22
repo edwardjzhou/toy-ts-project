@@ -1,5 +1,3 @@
-import { EventEmitter, once } from 'events'
-
 import { Test } from './Test';
 import { withPrimaryKey } from './BaseRecord';
 import type { PrimaryKey } from "./schema";

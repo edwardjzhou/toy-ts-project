@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * “node app.js courses.csv students.csv tests.csv marks.csv output.json”
  * for the principal's use, we assumed:
@@ -9,8 +8,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * to compile: 1. tsc 2. the below
  * ts-node 'src/app.ts' courses.csv students.csv tests.csv marks.csv output.json
 */
+Object.defineProperty(exports, "__esModule", { value: true });
 const AppController_1 = require("./controllers/AppController");
-const principalsApp = AppController_1.AppControl.create();
-AppController_1.AppControl.update(principalsApp).then(() => {
-    AppController_1.AppControl.show(principalsApp);
-});
+const principalsApp = AppController_1.AppControllerSingleton.create();
+void AppController_1.update(principalsApp).then(AppController_1.show);
+// does baserecord.proto.all work?
+//can i take out evenetemitter imports in tsc

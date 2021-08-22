@@ -1,15 +1,20 @@
 declare class App {
     #private;
-    migrate(): Promise<void>;
+    migrate(): Promise<this>;
     private loadCsvRecords;
-    private joinAndComputeRecords;
     render(): unknown;
-    constructor();
 }
 declare class AppController {
     create(): App;
     show(app: App): unknown;
-    update(app: App): Promise<void>;
+    update(app: App): Promise<App>;
 }
-export declare const AppControl: AppController;
-export {};
+export declare const AppControllerSingleton: AppController;
+export declare const update: (app: App) => Promise<App>;
+export declare const show: (app: App) => unknown;
+declare const _default: {
+    AppControllerSingleton: AppController;
+    update: (app: App) => Promise<App>;
+    show: (app: App) => unknown;
+};
+export default _default;

@@ -1,8 +1,8 @@
 /// <reference types="node" />
-import { EventEmitter } from 'events';
 import { Course } from "./Course";
 import { Mark } from "./Mark";
 import type { PrimaryKey, ForeignKey } from './schema';
+import type { EventEmitter } from 'node:events';
 export interface TestSchema {
     id: PrimaryKey;
     course_id: ForeignKey;

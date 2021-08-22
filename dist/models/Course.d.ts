@@ -1,5 +1,5 @@
+/// <reference path="BaseRecord.d.ts" />
 /// <reference types="node" />
-import { EventEmitter } from 'events';
 import { Test } from './Test';
 import type { PrimaryKey } from "./schema";
 export interface CourseSchema {
@@ -15,7 +15,7 @@ declare type CourseRecord = CourseSchema & CourseComputed;
 declare const Course_base: {
     new (): {};
     load(fp?: `${string}.csv`): Promise<void>;
-    isLoadedEvent: EventEmitter;
+    isLoadedEvent: import("node:events");
     isLoaded: boolean;
     index: Map<PrimaryKey, CourseRecord>;
     all: CourseRecord[];

@@ -1,8 +1,8 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import type { CsvFilePath } from './../parser/Parser';
-import type { PrimaryKey, Model, Record, PKSchema } from './schema';
-declare type AbstractConstructor<T> = abstract new (...args: any[]) => T;
+import type { PrimaryKey, Model, Record, ForeignKeyPropNamesInSchema, PKSchema } from './schema';
+declare module 'node:events';
 export declare abstract class BaseRecord {
     static LiterallyAllRecords: Map<Model, Record>;
     static index: Iterable<any>;
@@ -11,12 +11,15 @@ export declare abstract class BaseRecord {
 }
 export declare const withoutPrimaryKey: <T extends {
     id?: undefined;
-} & import("./Mark").MarkSchema, U extends AbstractConstructor<BaseRecord>>(Base: U) => ((abstract new (...args: any[]) => {}) & {
+} & import("./Mark").MarkSchema>() => {
+    new (): {};
     index: T[];
     all: T[];
     load(fp?: CsvFilePath): Promise<void>;
     isLoaded: boolean;
-}) & U;
+    find<FKName extends ForeignKeyPropNamesInSchema<T>, FKValue extends T[FKName]>(prop: FKName, value: FKValue): Promise<T | undefined>;
+    LiterallyAllRecords: Map<Model, Record>;
+};
 export declare const withPrimaryKey: <T extends PKSchema>() => {
     new (): {};
     load(fp?: CsvFilePath): Promise<void>;
@@ -31,12 +34,15 @@ declare const _default: {
     BaseRecord: typeof BaseRecord;
     withoutPrimaryKey: <T extends {
         id?: undefined;
-    } & import("./Mark").MarkSchema, U extends AbstractConstructor<BaseRecord>>(Base: U) => ((abstract new (...args: any[]) => {}) & {
+    } & import("./Mark").MarkSchema>() => {
+        new (): {};
         index: T[];
         all: T[];
         load(fp?: `${string}.csv`): Promise<void>;
         isLoaded: boolean;
-    }) & U;
+        find<FKName extends ForeignKeyPropNamesInSchema<T>, FKValue extends T[FKName]>(prop: FKName, value: FKValue): Promise<T | undefined>;
+        LiterallyAllRecords: Map<Model, Record>;
+    };
     withPrimaryKey: <T_1 extends PKSchema>() => {
         new (): {};
         load(fp?: `${string}.csv`): Promise<void>;

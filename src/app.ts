@@ -11,4 +11,7 @@
 import { AppControllerSingleton as app, update, show } from './controllers/AppController'
 
 const principalsApp = app.create();
-update(principalsApp).then(show);
+void update(principalsApp).then(show)
+
+// does baserecord.proto.all work?
+//can i take out evenetemitter imports in tsc

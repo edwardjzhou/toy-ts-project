@@ -1,6 +1,5 @@
 import { Test } from './Test';
 import { Student } from './Student';
-import { BaseRecord } from './BaseRecord';
 import type { ForeignKey, Grade } from './schema';
 export interface MarkSchema {
     test_id: ForeignKey;
@@ -12,12 +11,15 @@ interface MarkComputed {
     student: Student;
 }
 declare type MarkRecord = MarkSchema & MarkComputed;
-declare const Mark_base: ((abstract new (...args: any[]) => {}) & {
+declare const Mark_base: {
+    new (): {};
     index: MarkRecord[];
     all: MarkRecord[];
     load(fp?: `${string}.csv`): Promise<void>;
     isLoaded: boolean;
-}) & typeof BaseRecord;
+    find<FKName extends import("./schema").ForeignKeyPropNamesInSchema<MarkRecord>, FKValue extends MarkRecord[FKName]>(prop: FKName, value: FKValue): Promise<MarkRecord | undefined>;
+    LiterallyAllRecords: Map<import("./schema").Model, import("./schema").Record>;
+};
 export declare class Mark extends Mark_base implements MarkRecord {
     private _weightedMark;
     private _test;
