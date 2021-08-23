@@ -30,9 +30,7 @@ update(principalsApp).then(show);
 // first.then(()=> console.log(2))
 
 // async function synchronous(){
-//     console.log(first)
 //     resolver()
-//     console.log(first)
 //     await void 0
 // }
 
@@ -41,3 +39,5 @@ update(principalsApp).then(show);
 // Promise.resolve().then(()=> undefined)     .then(()=>console.log(3))
 // Promise.resolve().then(()=> console.log(1)).then(()=>console.log(4))
 // Promise.resolve().then(()=> console.log(2))
+
+// the then function is only put into the microtask/promise queue after chaining promise has fired
