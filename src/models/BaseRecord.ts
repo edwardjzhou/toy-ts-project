@@ -31,12 +31,6 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema>() => {
       this.isLoaded = true; 
     }
     public static isLoaded: boolean = false;
-    public static async find<
-      FKName extends ForeignKeyPropNamesInSchema<T>,
-      FKValue extends T[FKName]
-    > (prop: FKName, value: FKValue): Promise<T | undefined> {
-      return this.index.find(record => record[prop] === value)
-    }
   }
 }
 
@@ -67,7 +61,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
         case true: return Promise.resolve(<T>this.index.get(id))
         case false: 
           switch(this.isLoaded) {
-            case true: throw Error('relational consistency violated');
+            case true: throw Error('relational consistency violated; some FK doesnt map to a record'+ this);
             case false: return new Promise( (resolve): void => {
                 this.isLoadedEvent.once(MODEL_DONE_LOADING, () => {
                   resolve(<T>this.index.get(id));

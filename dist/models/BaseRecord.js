@@ -29,9 +29,6 @@ const withoutPrimaryKey = () => {
             this.isLoaded = true;
         }
         static isLoaded = false;
-        static async find(prop, value) {
-            return this.index.find(record => record[prop] === value);
-        }
     };
 };
 exports.withoutPrimaryKey = withoutPrimaryKey;
@@ -63,7 +60,7 @@ const withPrimaryKey = () => {
                 case true: return Promise.resolve(this.index.get(id));
                 case false:
                     switch (this.isLoaded) {
-                        case true: throw Error('relational consistency violated');
+                        case true: throw Error('relational consistency violated; some FK doesnt map to a record' + this);
                         case false: return new Promise((resolve) => {
                             this.isLoadedEvent.once(MODEL_DONE_LOADING, () => {
                                 resolve(this.index.get(id));

@@ -24,9 +24,9 @@ export class CsvTableParser {
         fs.readFile(filePath, 'utf8' , (err, rawData) => {
           if (err) throw err;
           const [ headersArray , rowStringsArray ] = this.read(rawData);
-          this.clean(rowStringsArray);
-          this.transform(rowStringsArray);
-          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[]};
+          this.clean(rowStringsArray); // mutates rowStringsArray only
+          this.transform(rowStringsArray); // mutates rowStringsArray only
+          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
           resolve(result);
         })
     })

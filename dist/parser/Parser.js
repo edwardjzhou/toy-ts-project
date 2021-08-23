@@ -27,8 +27,8 @@ class CsvTableParser {
                 if (err)
                     throw err;
                 const [headersArray, rowStringsArray] = this.read(rawData);
-                this.clean(rowStringsArray);
-                this.transform(rowStringsArray);
+                this.clean(rowStringsArray); // mutates rowStringsArray only
+                this.transform(rowStringsArray); // mutates rowStringsArray only
                 const result = { headers: headersArray, records: rowStringsArray };
                 resolve(result);
             });

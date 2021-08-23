@@ -10,15 +10,6 @@ class Student extends BaseRecord_1.withPrimaryKey() {
         return this._marks;
     }
     set marks(marks) {
-        let sumWeightedMarks = 0;
-        let sumWeights = 0;
-        for (const mark of marks) {
-            sumWeightedMarks += mark.weightedMark;
-            sumWeights += mark.test.weight;
-        }
-        const equivalentNumTests = sumWeights / 100;
-        const exactAverageTotalWeightedMarks = sumWeightedMarks / equivalentNumTests;
-        this._totalAverage = Math.round(exactAverageTotalWeightedMarks * 100) / 100;
         this._marks = marks;
     }
     get totalAverage() {

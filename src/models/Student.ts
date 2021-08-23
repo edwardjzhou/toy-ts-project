@@ -18,21 +18,12 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
     return this._marks;
   }
   public set marks(marks: Mark[]) {
-    let sumWeightedMarks = 0;
-    let sumWeights = 0;
-    for (const mark of marks){
-      sumWeightedMarks += mark.weightedMark
-      sumWeights += mark.test.weight
-    }
-    const equivalentNumTests = sumWeights / 100;
-    const exactAverageTotalWeightedMarksPerTest = sumWeightedMarks / equivalentNumTests;
-    this._totalAverage = Math.round(exactAverageTotalWeightedMarksPerTest * 100) / 100;
     this._marks = marks;
   }
   public get totalAverage(): number {
     return this._totalAverage;
   }
-  private set totalAverage(value: number) {
+  private set totalAverage(value: number) { // calculated in student controller right before view renders
     this._totalAverage = value;
   }
   // read from csv table

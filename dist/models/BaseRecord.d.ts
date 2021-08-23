@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 import type { CsvFilePath } from './../parser/Parser';
-import type { PrimaryKey, Model, Record, ForeignKeyPropNamesInSchema, PKSchema } from './schema';
+import type { PrimaryKey, Model, Record, PKSchema } from './schema';
 declare module 'node:events';
 export declare abstract class BaseRecord {
     static LiterallyAllRecords: Map<Model, Record>;
@@ -17,7 +17,6 @@ export declare const withoutPrimaryKey: <T extends {
     all: T[];
     load(fp?: CsvFilePath): Promise<void>;
     isLoaded: boolean;
-    find<FKName extends ForeignKeyPropNamesInSchema<T>, FKValue extends T[FKName]>(prop: FKName, value: FKValue): Promise<T | undefined>;
     LiterallyAllRecords: Map<Model, Record>;
 };
 export declare const withPrimaryKey: <T extends PKSchema>() => {
@@ -40,7 +39,6 @@ declare const _default: {
         all: T[];
         load(fp?: `${string}.csv`): Promise<void>;
         isLoaded: boolean;
-        find<FKName extends ForeignKeyPropNamesInSchema<T>, FKValue extends T[FKName]>(prop: FKName, value: FKValue): Promise<T | undefined>;
         LiterallyAllRecords: Map<Model, Record>;
     };
     withPrimaryKey: <T_1 extends PKSchema>() => {

@@ -17,7 +17,6 @@ declare const Mark_base: {
     all: MarkRecord[];
     load(fp?: `${string}.csv`): Promise<void>;
     isLoaded: boolean;
-    find<FKName extends import("./schema").ForeignKeyPropNamesInSchema<MarkRecord>, FKValue extends MarkRecord[FKName]>(prop: FKName, value: FKValue): Promise<MarkRecord | undefined>;
     LiterallyAllRecords: Map<import("./schema").Model, import("./schema").Record>;
 };
 export declare class Mark extends Mark_base implements MarkRecord {

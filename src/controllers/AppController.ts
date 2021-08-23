@@ -4,14 +4,12 @@ import { Mark } from './../models/Mark';
 import { Test } from './../models/Test';
 import { Student } from './../models/Student';
 import { StudentsController } from './StudentsController';
-import MarksController from './MarksController';
 import CoursesController from './CoursesController';
 
 class App {  
     #result: unknown; 
     readonly #studentsController = new StudentsController();
     readonly #coursesController = new CoursesController();
-    readonly #marksController = new MarksController();
 
     public migrate(): Promise<this> { 
         return this.loadCsvRecords().then(() => this);
@@ -30,7 +28,7 @@ class App {
     }
 
     public render(){
-      // console.log(Student.all, Mark.all, Test.all, Course.all)
+      console.log(Student.all, Mark.all, Test.all, Course.all)
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"
@@ -38,9 +36,15 @@ class App {
       } else {
           const students = [];
           for (const student of this.#studentsController.index()) {
+            const courseAverages = [];
+            const courses = this.#coursesController.index(student)
+            for (const course of courses){
+              courseAverages.push(course.courseAverage)
+            }
+            student.totalAverage = Math.round(courseAverages.reduce((acc, ele) => acc+ele) / courseAverages.length * 100) / 100
             const current = {
               ...this.#studentsController.show(student),
-              courses: this.#coursesController.index(student)
+              courses:this.#coursesController.index(student)
             };
             students.push(current);
           }
