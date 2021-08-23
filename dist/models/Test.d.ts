@@ -1,8 +1,8 @@
+/// <reference path="BaseRecord.d.ts" />
 /// <reference types="node" />
 import { Course } from "./Course";
 import { Mark } from "./Mark";
 import type { PrimaryKey, ForeignKey } from './schema';
-import type { EventEmitter } from 'node:events';
 export interface TestSchema {
     id: PrimaryKey;
     course_id: ForeignKey;
@@ -16,7 +16,7 @@ declare type TestRecord = TestSchema & TestComputed;
 declare const Test_base: {
     new (): {};
     load(fp?: `${string}.csv`): Promise<void>;
-    isLoadedEvent: EventEmitter;
+    isLoadedEvent: import("node:events");
     isLoaded: boolean;
     index: Map<PrimaryKey, TestRecord>;
     all: TestRecord[];

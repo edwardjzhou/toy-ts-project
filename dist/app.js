@@ -12,5 +12,5 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const AppController_1 = require("./controllers/AppController");
 const principalsApp = AppController_1.AppControllerSingleton.create();
 void AppController_1.update(principalsApp).then(AppController_1.show);
-// does baserecord.proto.all work?
-//can i take out evenetemitter imports in tsc
+// require() cache busitng
+// make something like Student.marks.courses work with an overload

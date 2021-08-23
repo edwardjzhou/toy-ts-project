@@ -44,12 +44,12 @@ const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
 export const withPrimaryKey = <T extends PKSchema> () => {
   return class extends BaseRecord{
     public static async load(fp: CsvFilePath = `../../${this.name.toLowerCase()}s.csv`): Promise<void>{
-      if (this.isLoaded) return Promise.resolve(void 0)
+      if (this.isLoaded) return Promise.resolve(void 0);
       const { headers, records } = await new CsvTableParser(<any>this).run(fp);
       this.all = records;
-      super.LiterallyAllRecords.set(<any>this, <any>records)
+      super.LiterallyAllRecords.set(<any>this, <any>records);
       this.isLoaded = true; 
-      this.isLoadedEvent.emit(MODEL_DONE_LOADING)
+      this.isLoadedEvent.emit(MODEL_DONE_LOADING);
     }
     public static isLoadedEvent: EventEmitter = new EventEmitter();
     public static isLoaded: boolean = false;
@@ -79,3 +79,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
   }
 }
 export default { BaseRecord, withoutPrimaryKey, withPrimaryKey }
+
+
+
+

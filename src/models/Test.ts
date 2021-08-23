@@ -1,9 +1,8 @@
 
 import { Course } from "./Course";
 import { Mark } from "./Mark";
-import { withPrimaryKey } from './BaseRecord'
-import type { PrimaryKey, Grade, ForeignKey } from './schema'
-import type { EventEmitter, once } from 'node:events'
+import { withPrimaryKey } from './BaseRecord';
+import type { PrimaryKey, Grade, ForeignKey } from './schema';
 export interface TestSchema {
   id: PrimaryKey;         // PK
   course_id: ForeignKey;  // FK

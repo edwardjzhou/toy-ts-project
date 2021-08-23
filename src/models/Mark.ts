@@ -36,7 +36,6 @@ export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord 
       return this._weightedMark
     }
     private set weightedMark(testWeight: number) {
-      // const roundedWeightedMark = Math.round(testWeight * this.mark / 100);
       const roundedWeightedMark = testWeight * this.mark / 100
       this._weightedMark = roundedWeightedMark;
     }

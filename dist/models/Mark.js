@@ -27,7 +27,6 @@ class Mark extends BaseRecord_1.withoutPrimaryKey() {
         return this._weightedMark;
     }
     set weightedMark(testWeight) {
-        // const roundedWeightedMark = Math.round(testWeight * this.mark / 100);
         const roundedWeightedMark = testWeight * this.mark / 100;
         this._weightedMark = roundedWeightedMark;
     }

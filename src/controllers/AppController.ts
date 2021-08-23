@@ -31,7 +31,6 @@ class App {
 
     public render(){
       // console.log(Student.all, Mark.all, Test.all, Course.all)
-      console.log(Student.all, this)
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"
@@ -50,11 +49,12 @@ class App {
           };
       }
       this.#result = JSON.stringify(this.#result, null, 2);
-      // console.log(this.#result)
+      console.log(this.#result)
       fs.writeFile('./output1.json', <string>this.#result, (err) => {
         if (err) throw err
       });
       return this.#result;
+    
     }
 }
 class AppController {

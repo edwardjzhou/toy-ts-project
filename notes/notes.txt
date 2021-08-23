@@ -81,3 +81,9 @@ like you cant {
 function logName(something: { name: string }) {
     console.log(something.name);
 }
+
+
+// PICK/OMIT <object O , keyof O you want taken out>
+// EXCLUDE <union type U, part of the U>
+type T0 = Omit<{ a: string, b: string }, "a"> //  { b: string; }
+type T3 = Exclude<string | number, string> // number

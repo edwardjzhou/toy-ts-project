@@ -20,13 +20,13 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
   public set marks(marks: Mark[]) {
     let sumWeightedMarks = 0;
     let sumWeights = 0;
-    for (const mark of marks ){
+    for (const mark of marks){
       sumWeightedMarks += mark.weightedMark
       sumWeights += mark.test.weight
     }
     const equivalentNumTests = sumWeights / 100;
-    const exactAverageTotalWeightedMarks = sumWeightedMarks / equivalentNumTests;
-    this._totalAverage = Math.round(exactAverageTotalWeightedMarks * 100) / 100;
+    const exactAverageTotalWeightedMarksPerTest = sumWeightedMarks / equivalentNumTests;
+    this._totalAverage = Math.round(exactAverageTotalWeightedMarksPerTest * 100) / 100;
     this._marks = marks;
   }
   public get totalAverage(): number {

@@ -13,5 +13,6 @@ import { AppControllerSingleton as app, update, show } from './controllers/AppCo
 const principalsApp = app.create();
 void update(principalsApp).then(show)
 
-// does baserecord.proto.all work?
-//can i take out evenetemitter imports in tsc
+
+// require() cache busitng
+// make something like Student.marks.courses work with an overload1
