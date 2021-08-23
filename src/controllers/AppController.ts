@@ -9,9 +9,9 @@ import { isCsvFilePathOrThrow, JSONPath } from '../parser/Parser';
 import type { JsonFilePath } from '../parser/Parser';
 
 class App {  
-    #result: unknown; 
     readonly #studentsController = new StudentsController();
     readonly #coursesController = new CoursesController();
+    #result!: { students?: any, error?: any } | string; 
     private outputFilePath!: JsonFilePath;
 
     public migrate(): Promise<this> { 
@@ -31,7 +31,7 @@ class App {
     }
 
     public render(){
-      console.log(Student.all, Mark.all, Test.all, Course.all)
+      console.log(Student.all, Mark.all, Test.all, Course.all);
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"
@@ -56,7 +56,7 @@ class App {
           };
       }
       this.#result = JSON.stringify(this.#result, null, 2);
-      console.log(this.#result)
+      console.log(this.#result);
       fs.writeFile(this.outputFilePath, <string>this.#result, (err) => {
         if (err) throw err
       });

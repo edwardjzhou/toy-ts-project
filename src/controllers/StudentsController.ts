@@ -32,12 +32,12 @@ export class StudentsController extends BaseController<Student> {
     return students;
   }
   //a student has many courses THROUGH many marks THROUGH belongs_to tests; 
-  // THROUGH associations are not in my models and the controller deals with it
+  // THROUGH associations are not in my models; the controller deals with it like here
   public show({ id, name, totalAverage }: Partial<Student>): Partial<Student>{
     const student = {
-      id: id,
-      name: name,
-      totalAverage: totalAverage
+      id,
+      name,
+      totalAverage
     };
     return student;
   }

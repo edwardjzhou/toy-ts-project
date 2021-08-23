@@ -1,12 +1,20 @@
 import { BaseController } from "./BaseController";
 import { Student } from '../models/Student';
 import { Course } from '../models/Course';
+import { CourseSchema } from '../models/Course';
 import { Mark } from '../models/Mark';
-import { Test } from '../models/Test';
+
+interface CourseShow extends CourseSchema {
+    courseAverage?: number;
+}
+
+type CourseIndex = CourseShow[]
 
 export class CoursesController extends BaseController<Course> {
     public create(){}
-    public index(arg: { marks: Mark[] } | Mark[]){
+    // public index(record: { marks: Mark[] }): CourseIndex
+    // public index(s: Student): CourseIndex
+    public index(arg: Student | { marks: Mark[] } | Mark[] ){
         if ("marks" in arg) arg = arg.marks;
 
         const distinctCourses = new Map();
@@ -23,6 +31,7 @@ export class CoursesController extends BaseController<Course> {
         }
         return courses;
     }
+
     public show(c: Course, courseAverage?: any){
         const course = {
             id: c.id,
@@ -32,6 +41,7 @@ export class CoursesController extends BaseController<Course> {
         };
         return course;
     }
+
     public update(){} 
 }
 

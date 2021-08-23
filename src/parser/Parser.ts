@@ -9,7 +9,7 @@ type Json = typeof AppFileTypes.json;
 type FilePath<T = Csv> = T extends string ? `${string}.${T}`: never; 
 export type CsvFilePath = FilePath<Csv>;
 export type JsonFilePath = FilePath<Json>;
-export const JSONPath = (path: string) => {
+export const JSONPath = (path: string): JsonFilePath => {
   if (path.slice(path.length - 5) !== '.json') throw TypeError('output arg must end in .json')
   return path as JsonFilePath
 }
@@ -23,7 +23,6 @@ interface Table {
     records: any[];
 }
 
-// extensions: 1. using filehandles/streams/async iterators 2. extending a readline parser for command line args
 export class CsvTableParser {
   private model: Model;
   public constructor(model: Model){
