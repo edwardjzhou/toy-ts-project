@@ -12,7 +12,6 @@
         },
         "moduleResolution": "node",
         "pretty": true,
-        "emitDecoratorMetadata" : true,
         "noEmit": false,
         "declaration": true
     },

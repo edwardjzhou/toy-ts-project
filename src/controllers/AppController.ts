@@ -5,25 +5,28 @@ import { Test } from './../models/Test';
 import { Student } from './../models/Student';
 import { StudentsController } from './StudentsController';
 import CoursesController from './CoursesController';
+import { isCsvFilePathOrThrow, JSONPath } from '../parser/Parser';
+import type { JsonFilePath } from '../parser/Parser';
 
 class App {  
     #result: unknown; 
     readonly #studentsController = new StudentsController();
     readonly #coursesController = new CoursesController();
+    private outputFilePath!: JsonFilePath;
 
     public migrate(): Promise<this> { 
         return this.loadCsvRecords().then(() => this);
     }
     private loadCsvRecords(): Promise<void[]> {
-         if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
+        if (process.argv.length < 7) throw Error('need (course, student, test, mark, and output) args');
         const coursesFilePath = process.argv[2],
         studentsFilePath = process.argv[3],
         testsFilePath = process.argv[4],
-        marksFilePath = process.argv[5],
-        outputFilePath = process.argv[6];
-        const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath];
+        marksFilePath = process.argv[5];
+        this.outputFilePath = JSONPath(process.argv[6]);
+        const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow);
         const models = [Course, Student, Test, Mark];
-        const allLoads = models.map((model, i) => model.load(paths[i] as any)); 
+        const allLoads = models.map((model, i) => model.load(paths[i])); 
         return Promise.all(allLoads); 
     }
 
@@ -54,7 +57,7 @@ class App {
       }
       this.#result = JSON.stringify(this.#result, null, 2);
       console.log(this.#result)
-      fs.writeFile('./output1.json', <string>this.#result, (err) => {
+      fs.writeFile(this.outputFilePath, <string>this.#result, (err) => {
         if (err) throw err
       });
       return this.#result;

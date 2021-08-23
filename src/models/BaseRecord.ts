@@ -2,17 +2,16 @@ import { EventEmitter, once } from 'events'
 import { CsvTableParser } from './../parser/Parser'
 import type { CsvFilePath } from './../parser/Parser'
 import type { 
-  PrimaryKey, ForeignKey,
-  Model, Record, 
-  Schema, ForeignKeyPropNamesInSchema,
+  PrimaryKey,
+  Model, Record, Schema,
   NotPrimaryKeyedSchema, PKSchema
 } from './schema';
 declare module 'node:events'
 export abstract class BaseRecord {
     public static LiterallyAllRecords: Map<Model, Record> = new Map()
     public static index: Iterable<any>; // overridden
-    public static get all(): any {return void 0}; // overridden
-    public static set all(args: any){}; // overridden
+    public static get all(){return [...this.index]}; // overridden
+    public static set all(arg: Schema[]){}; // overridden
 }
 
 export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema>() => {
@@ -36,8 +35,8 @@ export const withoutPrimaryKey = <T extends NotPrimaryKeyedSchema>() => {
 
 const MODEL_DONE_LOADING: unique symbol = Symbol('@@DONE');
 export const withPrimaryKey = <T extends PKSchema> () => {
-  return class extends BaseRecord{
-    public static async load(fp: CsvFilePath = `../../${this.name.toLowerCase()}s.csv`): Promise<void>{
+  return class extends BaseRecord {
+    public static async load(fp: CsvFilePath): Promise<void>{
       if (this.isLoaded) return Promise.resolve(void 0);
       const { headers, records } = await new CsvTableParser(<any>this).run(fp);
       this.all = records;
@@ -45,7 +44,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
       this.isLoaded = true; 
       this.isLoadedEvent.emit(MODEL_DONE_LOADING);
     }
-    public static isLoadedEvent: EventEmitter = new EventEmitter();
+    public static isLoadedEvent: EventEmitter = new EventEmitter().setMaxListeners(1000);
     public static isLoaded: boolean = false;
     public static override index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static override get all(): T[] {
@@ -61,7 +60,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
         case true: return Promise.resolve(<T>this.index.get(id))
         case false: 
           switch(this.isLoaded) {
-            case true: throw Error('relational consistency violated; some FK doesnt map to a record'+ this);
+            case true: throw Error('relational consistency violated; some FK doesnt map to a record');
             case false: return new Promise( (resolve): void => {
                 this.isLoadedEvent.once(MODEL_DONE_LOADING, () => {
                   resolve(<T>this.index.get(id));

@@ -2,17 +2,28 @@ import fs from 'fs';
 import { measure } from './decorators/measure';
 import { StringCleaning } from './modules/StringCleaning';
 import { AppFileTypes } from './namespaces/AppFileTypes';
-import type { Model, Record, RecordForModel } from './../models/schema';
+import type { Model, Record } from './../models/schema';
 
 type Csv = typeof AppFileTypes.csv;
+type Json = typeof AppFileTypes.json;
 type FilePath<T = Csv> = T extends string ? `${string}.${T}`: never; 
 export type CsvFilePath = FilePath<Csv>;
+export type JsonFilePath = FilePath<Json>;
+export const JSONPath = (path: string) => {
+  if (path.slice(path.length - 5) !== '.json') throw TypeError('output arg must end in .json')
+  return path as JsonFilePath
+}
+export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never => {
+  if (path.slice(path.length - 4) !== '.csv') throw TypeError('args must end in .csv')
+  return true
+}
 type header = string;
 interface Table {
     headers: header[];
     records: any[];
 }
 
+// extensions: 1. using filehandles/streams/async iterators 2. extending a readline parser for command line args
 export class CsvTableParser {
   private model: Model;
   public constructor(model: Model){

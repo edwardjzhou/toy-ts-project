@@ -1,3 +1,5 @@
+if (process.env?.USER !== `edward`) console.log = () => {}
+import { resolve } from 'path/posix';
 /** 
  * from home directory:
  * node ./dist/app.js examples/Example1/courses.csv examples/Example1/students.csv examples/Example1/tests.csv examples/Example1/marks.csv output1.json
@@ -13,6 +15,29 @@
 */
 
 import { AppControllerSingleton as app, update, show } from './controllers/AppController'
-
 const principalsApp = app.create();
 update(principalsApp).then(show);
+
+
+
+// problems encountered were working on promise resolution
+// let resolver;
+// let first = new Promise(resolve => {
+//      resolver = resolve
+// })
+// synchronous().then(()=>console.log(3)) 
+// Promise.resolve().then(()=>console.log(1)).then(()=>console.log(4))
+// first.then(()=> console.log(2))
+
+// async function synchronous(){
+//     console.log(first)
+//     resolver()
+//     console.log(first)
+//     await void 0
+// }
+
+// synchronous() is equivalent to Promise.resolve(void 0).then(() => undefined)
+// rewritten equivalent:
+// Promise.resolve().then(()=> undefined)     .then(()=>console.log(3))
+// Promise.resolve().then(()=> console.log(1)).then(()=>console.log(4))
+// Promise.resolve().then(()=> console.log(2))

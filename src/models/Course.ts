@@ -48,14 +48,3 @@ export class Course extends withPrimaryKey<CourseRecord>() implements CourseReco
   }
 }
 export default Course
-
-
-// const c = new Course(1,'math101','edward')
-// console.log(c)
-// Course.load().then( () => {
-//     console.log(Course.all)
-//     console.log(Object.getPrototypeOf(Object.getPrototypeOf(Course)).isLoaded)
-//     console.log(Object.getPrototypeOf(Course).isLoaded)
-//     console.log(Course.isLoaded)
-//   }
-// )
