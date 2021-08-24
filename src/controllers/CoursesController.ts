@@ -1,38 +1,34 @@
 import { BaseController } from "./BaseController";
-import { Student } from '../models/Student';
-import { Course } from '../models/Course';
-import { CourseSchema } from '../models/Course';
+import { Course, CourseSchema } from '../models/Course';
 import { Mark } from '../models/Mark';
+import type { StudentRecord } from '../models/Student';
 
-interface CourseShow extends CourseSchema {
+type CoursesIndex = Required<CoursesShow>[]
+type CoursesShow = {
     courseAverage?: number;
-}
-
-type CourseIndex = CourseShow[]
-
+} & CourseSchema;
 export class CoursesController extends BaseController<Course> {
     public create(){}
-    // public index(record: { marks: Mark[] }): CourseIndex
-    // public index(s: Student): CourseIndex
-    public index(arg: Student | { marks: Mark[] } | Mark[] ){
-        if ("marks" in arg) arg = arg.marks;
+    public index(m: Mark[]): CoursesShow[]
+    public index(s: StudentRecord): CoursesIndex
+    public index(arg: StudentRecord | Mark[]): CoursesShow[] {
+        const marks = ("marks" in arg) ? arg.marks: arg;
 
         const distinctCourses = new Map();
-        for (const mark of arg) {
+        for (const mark of marks) {
             if (!distinctCourses.has(mark.test.course)) distinctCourses.set(mark.test.course, [mark.weightedMark]);
             else distinctCourses.get(mark.test.course).push(mark.weightedMark);
         }
 
         const courses = [];
         for(const [course, weightedMarkArray] of distinctCourses.entries()) {
-            const average = weightedMarkArray.reduce((acc: number, ele: number) => acc + ele, 0);
-            const roundedAverage = Math.round(average * 100) / 100; 
-            courses.push(this.show(course, roundedAverage));
+            const averageWeightedMark = weightedMarkArray.reduce((acc: number, ele: number) => acc + ele, 0);
+            const roundedAverageWeightedMark = Math.round(averageWeightedMark * 100) / 100; 
+            courses.push(this.show(course, roundedAverageWeightedMark));
         }
         return courses;
     }
-
-    public show(c: Course, courseAverage?: any){
+    public show(c: Course, courseAverage?: number): CoursesShow {
         const course = {
             id: c.id,
             name: c.name,
@@ -41,17 +37,8 @@ export class CoursesController extends BaseController<Course> {
         };
         return course;
     }
-
     public update(){} 
 }
 
 export default CoursesController
 
-
-//   Course {
-//     _tests: [ [Test], [Test], [Test] ],
-//     _totalWeight: 100,
-//     id: 1,
-//     name: 'Biology',
-//     teacher: 'Mr. D'
-//   },

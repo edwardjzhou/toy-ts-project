@@ -44,7 +44,7 @@ export const withPrimaryKey = <T extends PKSchema> () => {
       this.isLoaded = true; 
       this.isLoadedEvent.emit(MODEL_DONE_LOADING);
     }
-    public static isLoadedEvent: EventEmitter = new EventEmitter().setMaxListeners(1000);
+    public static isLoadedEvent: EventEmitter = new EventEmitter().setMaxListeners(1e3);
     public static isLoaded: boolean = false;
     public static override index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static override get all(): T[] {
