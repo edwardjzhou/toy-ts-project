@@ -28,47 +28,19 @@ export class CsvTableParser {
   public constructor(model: Model){
     this.model = model;
   }
-  // @measure
-  // public run(filePath: FilePath<Csv>): Promise<Table>{    
-  //   return new Promise(resolve => { 
-  //       fs.readFile(filePath, 'utf8' , (err, rawData) => {
-  //         if (err) throw err;
-  //         const [ headersArray , rowStringsArray ] = this.read(rawData);
-  //         this.clean(rowStringsArray); // mutates rowStringsArray only
-  //         this.transform(rowStringsArray); // mutates rowStringsArray only
-  //         const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
-  //         resolve(result);
-  //       })
-  //   })
-  // }
+  
   @measure
-  public run(filePath: FilePath<Csv>): any{    
-    const { once } = require('events');
-    const fs = require('fs');
-    const { createInterface } = require('readline');
-    let d = fs.open(filePath, (err: any, fd: any) => {
-      async function processLineByLine() {
-        try {
-          const rl = createInterface({
-            input: createReadStream('./examples/Example1/courses.csv'),
-            crlfDelay: Infinity
-          });
-
-          rl.on('line', (line:any) => {
-            console.log(line)
-          });
-
-          await once(rl, 'close');
-
-          console.log('File processed.');
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    processLineByLine()
-        fs.createReadStream('',{fd}).pipe(process.stdout)
+  public run(filePath: FilePath<Csv>): Promise<Table>{    
+    return new Promise(resolve => { 
+        fs.readFile(filePath, 'utf8' , (err, rawData) => {
+          if (err) throw err;
+          const [ headersArray , rowStringsArray ] = this.read(rawData);
+          this.clean(rowStringsArray); // mutates rowStringsArray only
+          this.transform(rowStringsArray); // mutates rowStringsArray only
+          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
+          resolve(result);
+        })
     })
-
   }
 
   public read(rawData: string): [header[], string[]] {
@@ -103,7 +75,6 @@ export class CsvTableParser {
     for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
       //@ts-ignore
       rowsStringsArray[idx] = new this.model(...rowString.split(','));
-      
     }
   }
 }

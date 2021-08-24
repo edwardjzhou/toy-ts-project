@@ -8,11 +8,9 @@ import CoursesController from './CoursesController';
 import { isCsvFilePathOrThrow, JSONPath } from '../parser/Parser';
 import type { JsonFilePath } from '../parser/Parser';
 
-
-// APP EXTENDS BASE RECORD?
+const studentsController = new StudentsController();
+const coursesController = new CoursesController();
 class App {  
-    readonly #studentsController = new StudentsController();
-    readonly #coursesController = new CoursesController();
     #result!: { students: any[] } | { error: "Invalid course weights" }; 
     private outputFilePath!: JsonFilePath;
 
@@ -25,32 +23,33 @@ class App {
         studentsFilePath = process.argv[3],
         testsFilePath = process.argv[4],
         marksFilePath = process.argv[5];
-        this.outputFilePath = JSONPath(process.argv[6]);
-        const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow);
+        this.outputFilePath = JSONPath(process.argv[6]); // can throw
+        const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow); // can throw
         const models = [Course, Student, Test, Mark];
         const allLoads = models.map((model, i) => model.load(paths[i])); 
         return Promise.all(allLoads); 
     }
 
     public render(){
-      // console.log(Student.all, Mark.all, Test.all, Course.all);
       if (!Course.areTestWeightsValid()) {
           this.#result = {
               "error": "Invalid course weights"
           };
       } else {
-          const students = this.#studentsController.index();
+          const students = studentsController.index();
           this.#result = {
             students
           };
       }
+      if (process.env?.USER !== `edward`) console.log = () => {}
+      console.log(Student.all, Mark.all, Test.all, Course.all);
       console.log(JSON.stringify(this.#result, null, 2))
-      fs.writeFile(this.outputFilePath, <string>JSON.stringify(this.#result, null, 2), (err) => {
+      fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
         if (err) throw err
       });
       return this.#result;
-    
     }
+    
 }
 class AppController {
   public create(): App {

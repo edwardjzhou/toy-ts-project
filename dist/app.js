@@ -1,4 +1,5 @@
-/** 
+"use strict";
+/**
  * TO RUN from home directory:
  * node ./dist/app.js examples/Example1/courses.csv examples/Example1/students.csv examples/Example1/tests.csv examples/Example1/marks.csv output1.json
  * ts-node ./src/app.ts examples/Example1/courses.csv examples/Example1/students.csv examples/Example1/tests.csv examples/Example1/marks.csv output1.json
@@ -12,8 +13,7 @@
     * (e) the program will never be used modularly => we use imports with side effects;
     * (f) the only programmer will be myself => we use idiosyncratic names;
 */
-
-import { AppControllerSingleton as app, update, show } from './controllers/AppController'
-
-const principalsApp = app.create();
-update(principalsApp).then(show);
+Object.defineProperty(exports, "__esModule", { value: true });
+const AppController_1 = require("./controllers/AppController");
+const principalsApp = AppController_1.AppControllerSingleton.create();
+AppController_1.update(principalsApp).then(AppController_1.show);
