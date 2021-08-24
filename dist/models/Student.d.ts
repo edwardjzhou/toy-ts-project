@@ -13,13 +13,12 @@ interface StudentComputed {
 export declare type StudentRecord = StudentSchema & StudentComputed;
 declare const Student_base: {
     new (): {};
-    load(fp: `${string}.csv`): Promise<void>;
+    import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");
     isLoaded: boolean;
     index: Map<number, StudentRecord>;
     all: StudentRecord[];
     find(id: number): Promise<StudentRecord>;
-    LiterallyAllRecords: Map<import("./schema").Model, import("./schema").Record>;
 };
 export declare class Student extends Student_base implements StudentRecord {
     private _marks;

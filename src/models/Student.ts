@@ -1,4 +1,4 @@
-import { Mark } from './Mark';
+import type { MarkRecord } from './Mark';
 import { withPrimaryKey } from './BaseRecord';
 import type { PrimaryKey } from './schema';
 export interface StudentSchema {
@@ -6,18 +6,18 @@ export interface StudentSchema {
   name: string;
 }
 interface StudentComputed {
-  marks: Mark[];          // a student has_many marks; join a student with Mark.student_id
-  totalAverage: number;   // computed for view (truncated to 2 decimals)
+  marks: MarkRecord[];    // a student has_many marks; join a student with Mark.student_id
+  totalAverage: number;   // computed for view (rounded to 2 decimals)
 }
 export type StudentRecord = StudentSchema & StudentComputed;
 export class Student extends withPrimaryKey<StudentRecord>() implements StudentRecord {
   // accessors to joins and computed values; dependent on other tables
-  private _marks: Mark[] = [];    // has-many
-  private _totalAverage!: number; // computed
-  public get marks(): Mark[] {
+  private _marks: MarkRecord[] = [];    // has-many
+  private _totalAverage!: number;       // computed
+  public get marks(): MarkRecord[] {
     return this._marks;
   }
-  public set marks(marks: Mark[]) {
+  public set marks(marks: MarkRecord[]) {
     this._marks = marks;
   }
   public get totalAverage(): number {

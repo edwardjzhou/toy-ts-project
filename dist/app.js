@@ -13,7 +13,10 @@
     * (e) the program will never be used modularly => we use imports with side effects;
     * (f) the only programmer will be myself => we use idiosyncratic names;
 */
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const AppController_1 = require("./controllers/AppController");
-const principalsApp = AppController_1.AppControllerSingleton.create();
-AppController_1.update(principalsApp).then(AppController_1.show);
+const App_1 = __importDefault(require("./controllers/App"));
+const principalsApp = new App_1.default();
+principalsApp.run();

@@ -8,7 +8,7 @@ type StudentsShow = {
   name: string;
   totalAverage: number;
 };
-type StudentsIndex = {
+export type StudentsIndex = {
   id: number;
   name: string;
   totalAverage: number;
@@ -20,7 +20,7 @@ type StudentsIndex = {
   }[]
 }[];
 const coursesController = new CoursesController()
-export class StudentsController extends BaseController<Student> {
+export class StudentsController extends BaseController<StudentRecord> {
   public index(): StudentsIndex {
     const index = []
     const students = Student.all.sort((a,b) => a.id > b.id ? 1: (a.id < b.id ? -1: 0));

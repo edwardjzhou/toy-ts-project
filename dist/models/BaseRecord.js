@@ -1,19 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.withPrimaryKey = exports.withoutPrimaryKey = exports.BaseRecord = void 0;
+exports.withPrimaryKey = exports.withoutPrimaryKey = void 0;
 const events_1 = require("events");
 const Parser_1 = require("./../parser/Parser");
-class BaseRecord {
-    static LiterallyAllRecords = new Map();
-    static index; // overridden
-    static get all() { return [...this.index]; }
-    ; // overridden
-    static set all(arg) { }
-    ; // overridden
-}
-exports.BaseRecord = BaseRecord;
 const withoutPrimaryKey = () => {
-    return class extends BaseRecord {
+    return class {
         static index = [];
         static get all() {
             return this.index;
@@ -21,28 +12,23 @@ const withoutPrimaryKey = () => {
         static set all(records) {
             this.index = records;
         }
-        static async load(fp = `/../${this.name.toLowerCase()}s.csv`) {
-            if (this.isLoaded)
-                return Promise.resolve(void 0);
+        static async import(fp) {
             const { headers, records } = await new Parser_1.CsvTableParser(this).run(fp);
             this.all = records;
-            this.isLoaded = true;
         }
-        static isLoaded = false;
     };
 };
 exports.withoutPrimaryKey = withoutPrimaryKey;
-const MODEL_DONE_LOADING = Symbol('@@DONE');
+const PK_MODEL_DONE_IMPORTING = Symbol('@@DONE');
 const withPrimaryKey = () => {
-    return class extends BaseRecord {
-        static async load(fp) {
+    return class {
+        static async import(fp) {
             if (this.isLoaded)
-                return Promise.resolve(void 0);
+                return void 0;
             const { headers, records } = await new Parser_1.CsvTableParser(this).run(fp);
             this.all = records;
-            super.LiterallyAllRecords.set(this, records);
             this.isLoaded = true;
-            this.isLoadedEvent.emit(MODEL_DONE_LOADING);
+            this.isLoadedEvent.emit(PK_MODEL_DONE_IMPORTING);
         }
         static isLoadedEvent = new events_1.EventEmitter().setMaxListeners(1e3);
         static isLoaded = false;
@@ -55,6 +41,12 @@ const withPrimaryKey = () => {
                 this.index.set(record.id, record);
             }
         }
+        // find() is basically an async function.
+        // We write it this way since we need an ordered resolution of promises.
+        // For a model m of models M, m's isLoadedEvent's cb
+        // resolves all associative m.find() promises
+        // before the m.import() promise resolves, 
+        // and thus all records are whole before Promise.all(for m in M m.import()) resolves.
         static find(id) {
             switch (this.index.has(id)) {
                 case true: return Promise.resolve(this.index.get(id));
@@ -62,7 +54,7 @@ const withPrimaryKey = () => {
                     switch (this.isLoaded) {
                         case true: throw Error('relational consistency violated; some FK doesnt map to a record');
                         case false: return new Promise((resolve) => {
-                            this.isLoadedEvent.once(MODEL_DONE_LOADING, () => {
+                            this.isLoadedEvent.once(PK_MODEL_DONE_IMPORTING, () => {
                                 resolve(this.index.get(id));
                             });
                         });
@@ -72,4 +64,4 @@ const withPrimaryKey = () => {
     };
 };
 exports.withPrimaryKey = withPrimaryKey;
-exports.default = { BaseRecord, withoutPrimaryKey: exports.withoutPrimaryKey, withPrimaryKey: exports.withPrimaryKey };
+exports.default = { withoutPrimaryKey: exports.withoutPrimaryKey, withPrimaryKey: exports.withPrimaryKey };

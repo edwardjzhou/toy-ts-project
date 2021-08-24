@@ -6,7 +6,7 @@ declare type StudentsShow = {
     name: string;
     totalAverage: number;
 };
-declare type StudentsIndex = {
+export declare type StudentsIndex = {
     id: number;
     name: string;
     totalAverage: number;

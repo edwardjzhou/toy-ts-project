@@ -4,7 +4,7 @@ exports.Course = void 0;
 const BaseRecord_1 = require("./BaseRecord");
 class Course extends BaseRecord_1.withPrimaryKey() {
     _tests = []; // has_many
-    _totalWeight; // computed for validating and then for  view
+    _totalWeight; // computed for validating 
     get tests() {
         return this._tests;
     }

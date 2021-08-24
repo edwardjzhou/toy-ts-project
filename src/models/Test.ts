@@ -1,31 +1,31 @@
-
 import { Course } from "./Course";
-import { Mark } from "./Mark";
 import { withPrimaryKey } from './BaseRecord';
-import type { PrimaryKey, Grade, ForeignKey } from './schema';
+import type { CourseRecord } from "./Course";
+import type { MarkRecord } from "./Mark";
+import type { PrimaryKey, ForeignKey } from './schema';
 export interface TestSchema {
   id: PrimaryKey;         // PK
   course_id: ForeignKey;  // FK
   weight: number;         // weight col is validated that: all weights of every Course.tests adds to 100
 }
 interface TestComputed {
-  marks: Mark[];          // has_many marks
-  course: Course;         // belongs_to_one course
+  marks: MarkRecord[];          // has_many marks
+  course: CourseRecord;         // belongs_to_one course
 }
-type TestRecord = TestSchema & TestComputed;
+export type TestRecord = TestSchema & TestComputed;
 export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
-  private _marks: Mark[] = [];
-  private _course!: Course; 
-  public get marks(): Mark[] {  // Passively wait for marks to join me
+  private _marks: MarkRecord[] = [];
+  private _course!: CourseRecord; 
+  public get marks(): MarkRecord[] {  // Passively wait for marks to join me
     return this._marks;
   }
-  public set marks(value: Mark[]) {
+  public set marks(value: MarkRecord[]) {
     this._marks = value;
   }
-  public get course(): Course { // Actively need to join courses
+  public get course(): CourseRecord { // Actively need to join courses
     return this._course;
   }
-  private set course(value: Course) {
+  private set course(value: CourseRecord) {
     this._course = value;
   }
   public readonly id: PrimaryKey;
@@ -38,7 +38,7 @@ export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
     this.weight = Number(weight);
     Course.find(this.course_id).then(foundCourse => {
       foundCourse.tests = [...foundCourse.tests, this];
-      this.course = <Course>foundCourse;
+      this.course = foundCourse;
     });
   }
 }

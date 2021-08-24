@@ -5,11 +5,9 @@ const Test_1 = require("./Test");
 const Student_1 = require("./Student");
 const BaseRecord_1 = require("./BaseRecord");
 class Mark extends BaseRecord_1.withoutPrimaryKey() {
-    // joins and computed
-    _weightedMark; // computed for view calculation: for course of Student(a student).courses => avg(mark)
-    _test; // FK
-    _student; // FK
-    // join and computed members' accessors
+    _weightedMark; // computed for view calculation: mark.test.weight / 100 * mark.mark
+    _test; // FK association
+    _student; // FK association
     get test() {
         return this._test;
     }
@@ -30,7 +28,6 @@ class Mark extends BaseRecord_1.withoutPrimaryKey() {
         const roundedWeightedMark = testWeight * this.mark / 100;
         this._weightedMark = roundedWeightedMark;
     }
-    // table
     test_id;
     student_id;
     mark;

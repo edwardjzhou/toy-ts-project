@@ -2,18 +2,18 @@ import { Test } from './Test';
 import { withPrimaryKey } from './BaseRecord';
 import type { PrimaryKey } from "./schema";
 export interface CourseSchema {
-  id: PrimaryKey;           // PK
+  id: PrimaryKey;          
   name: string;
   teacher: string;
 }
 interface CourseComputed {
     tests: Test[];          // has_many tests
-    totalWeight: number;    // computed for validation Course.tests
+    totalWeight: number;    // computed for validation with Course.tests
 }
-type CourseRecord = CourseSchema & CourseComputed;
+export type CourseRecord = CourseSchema & CourseComputed;
 export class Course extends withPrimaryKey<CourseRecord>() implements CourseRecord {
   private _tests: Test[] = [];        // has_many
-  private _totalWeight!: number;      // computed for validating and then for  view
+  private _totalWeight!: number;      // computed for validating 
   public get tests(): Test[] {
     return this._tests;
   }

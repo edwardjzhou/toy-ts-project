@@ -1,35 +1,36 @@
 import { Test } from './Test';
+import type { TestRecord } from './Test';
 import { Student } from './Student';
-import { withoutPrimaryKey, BaseRecord } from './BaseRecord';
+import type { StudentRecord } from './Student';
+import { withoutPrimaryKey } from './BaseRecord';
 import type { ForeignKey, Grade } from './schema'
 
 export interface MarkSchema {
-  test_id: ForeignKey;    // FK
-  student_id: ForeignKey; // FK
-  mark: Grade;            // 0-100 whole numbers
+  test_id: ForeignKey;   
+  student_id: ForeignKey; 
+  mark: Grade;            
 }
 interface MarkComputed {
-    test: Test;          // belongs-to-one
-    student: Student;    // belongs-to-one
+    test: TestRecord;          // belongs-to-one
+    student: StudentRecord;    // belongs-to-one
+    weightedMark: number;      // computed
 }
-type MarkRecord = MarkSchema & MarkComputed;
+export type MarkRecord = MarkSchema & MarkComputed;
 export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord {
-    // joins and computed
-    private _weightedMark!: number;  // computed for view calculation: for course of Student(a student).courses => avg(mark)
-    private _test!: Test;            // FK
-    private _student!: Student;      // FK
-    // join and computed members' accessors
-    public get test(): Test {
+    private _weightedMark!: number;        // computed for view calculation: mark.test.weight / 100 * mark.mark
+    private _test!: TestRecord;            // FK association
+    private _student!: StudentRecord;      // FK association
+    public get test(): TestRecord {
       return this._test;
     }
-    private set test(test: Test) {
+    private set test(test: TestRecord) {
       this.weightedMark = test.weight;
       this._test = test;
     }
-    public get student(): Student {
+    public get student(): StudentRecord {
       return this._student;
     }
-    private set student(student: Student) {
+    private set student(student: StudentRecord) {
       this._student = student;
     }
     public get weightedMark(): number {
@@ -39,7 +40,6 @@ export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord 
       const roundedWeightedMark = testWeight * this.mark / 100
       this._weightedMark = roundedWeightedMark;
     }
-    // table
     public readonly test_id: ForeignKey;
     public readonly student_id: ForeignKey;
     public readonly mark: Grade;
@@ -50,11 +50,11 @@ export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord 
       this.mark = <Grade>Number(mark);
       Test.find(this.test_id).then(foundTest => {
         foundTest.marks = [...foundTest.marks, this];
-        this.test = <Test>foundTest;
+        this.test = foundTest;
       })
       Student.find(this.student_id).then(foundStudent => {
         foundStudent.marks = [...foundStudent.marks, this];
-        this.student = <Student>foundStudent;
+        this.student = foundStudent;
       })
     }
 }

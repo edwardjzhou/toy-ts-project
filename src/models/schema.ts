@@ -14,14 +14,12 @@ export type Grade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 
 41 | 42 | 43 | 44 | 45 | 46 | 47 | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 | 56 | 57 | 58 | 59 | 60 | 
 61 | 62 | 63 | 64 | 65 | 66 | 67 | 68 | 69 | 70 | 71 | 72 | 73 | 74 | 75 | 76 | 77 | 78 | 79 | 80 |
  81 | 82 | 83 | 84 | 85 | 86 | 87 | 88 | 89 | 90 | 91 | 92 | 93 | 94 | 95 | 96 | 97 | 98 | 99 | 100;
-
 export type ForeignKey = number;
 export type PrimaryKey = number;
 // couldnt figure out how to map string literals union type to number literals union type...
-export type GradeGrade = `${Grade}.${Grade}`;
+export type GradeGrade = `${Exclude<Grade, 100>}.${Grade}` | `${Grade}.${0}`
 export type Model = typeof Student | typeof Test | typeof Mark | typeof Course;
 export type Record = Student | Test | Mark | Course;
-export type RecordForModel<M extends Model> = M extends new(...args: any[]) => infer R ? R extends Record ? R : never : never;
 export type Schema = StudentSchema | TestSchema | MarkSchema | CourseSchema;
 export type ForeignKeyPropNamesInSchema<S extends Schema> = {
   [P in keyof S]: P extends `${string}_id` ? P : never

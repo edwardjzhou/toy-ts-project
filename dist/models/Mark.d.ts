@@ -1,5 +1,5 @@
-import { Test } from './Test';
-import { Student } from './Student';
+import type { TestRecord } from './Test';
+import type { StudentRecord } from './Student';
 import type { ForeignKey, Grade } from './schema';
 export interface MarkSchema {
     test_id: ForeignKey;
@@ -7,25 +7,23 @@ export interface MarkSchema {
     mark: Grade;
 }
 interface MarkComputed {
-    test: Test;
-    student: Student;
+    test: TestRecord;
+    student: StudentRecord;
 }
-declare type MarkRecord = MarkSchema & MarkComputed;
+export declare type MarkRecord = MarkSchema & MarkComputed;
 declare const Mark_base: {
     new (): {};
     index: MarkRecord[];
     all: MarkRecord[];
-    load(fp?: `${string}.csv`): Promise<void>;
-    isLoaded: boolean;
-    LiterallyAllRecords: Map<import("./schema").Model, import("./schema").Record>;
+    import(fp: `${string}.csv`): Promise<void>;
 };
 export declare class Mark extends Mark_base implements MarkRecord {
     private _weightedMark;
     private _test;
     private _student;
-    get test(): Test;
+    get test(): TestRecord;
     private set test(value);
-    get student(): Student;
+    get student(): StudentRecord;
     private set student(value);
     get weightedMark(): number;
     private set weightedMark(value);

@@ -13,7 +13,8 @@
     * (f) the only programmer will be myself => we use idiosyncratic names;
 */
 
-import { AppControllerSingleton as app, update, show } from './controllers/AppController'
+import app from './controllers/App';
 
-const principalsApp = app.create();
-update(principalsApp).then(show);
+
+const principalsApp = app;
+principalsApp.run()

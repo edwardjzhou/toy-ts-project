@@ -11,16 +11,15 @@ interface CourseComputed {
     tests: Test[];
     totalWeight: number;
 }
-declare type CourseRecord = CourseSchema & CourseComputed;
+export declare type CourseRecord = CourseSchema & CourseComputed;
 declare const Course_base: {
     new (): {};
-    load(fp: `${string}.csv`): Promise<void>;
+    import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");
     isLoaded: boolean;
     index: Map<number, CourseRecord>;
     all: CourseRecord[];
     find(id: number): Promise<CourseRecord>;
-    LiterallyAllRecords: Map<import("./schema").Model, import("./schema").Record>;
 };
 export declare class Course extends Course_base implements CourseRecord {
     private _tests;
