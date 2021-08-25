@@ -14,13 +14,13 @@
         {
           "id": 2,
           "name": "History",
-          "teacher": "Mrs. P",
+          "teacher": " Mrs. P",
           "courseAverage": 51.8
         },
         {
           "id": 3,
           "name": "Math",
-          "teacher": "Mrs. C",
+          "teacher": " Mrs. C",
           "courseAverage": 74.2
         }
       ]
@@ -39,7 +39,7 @@
         {
           "id": 3,
           "name": "Math",
-          "teacher": "Mrs. C",
+          "teacher": " Mrs. C",
           "courseAverage": 74.2
         }
       ]
@@ -58,13 +58,13 @@
         {
           "id": 2,
           "name": "History",
-          "teacher": "Mrs. P",
+          "teacher": " Mrs. P",
           "courseAverage": 51.8
         },
         {
           "id": 3,
           "name": "Math",
-          "teacher": "Mrs. C",
+          "teacher": " Mrs. C",
           "courseAverage": 74.2
         }
       ]
