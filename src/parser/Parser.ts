@@ -1,6 +1,5 @@
 import fs from 'fs';
 import readline from 'readline';
-import { measure } from './decorators/measure';
 
 declare namespace AppFileTypes {
    const csv = 'csv';
@@ -20,7 +19,6 @@ export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never 
   return true
 }
 export class CsvTableParser {  
-  @measure
   public static create(fp: FilePath<Csv>): any {    
     return readline.createInterface({
       input: fs.createReadStream(fp),
@@ -30,4 +28,5 @@ export class CsvTableParser {
 }
 
 export default CsvTableParser 
+
 

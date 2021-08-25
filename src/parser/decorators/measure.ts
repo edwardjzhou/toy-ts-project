@@ -18,4 +18,7 @@ export const measure = (
   return descriptor;
 };
 
+export default measure
+
+
 

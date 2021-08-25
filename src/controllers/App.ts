@@ -1,21 +1,24 @@
 import fs from 'fs';
-import { Course } from '../models/Course';
-import { Mark } from '../models/Mark';
-import { Test } from '../models/Test';
-import { Student } from '../models/Student';
+import { Course } from './../models/Course';
+import { Mark } from './../models/Mark';
+import { Test } from './../models/Test';
+import { Student } from './../models/Student';
 import { StudentsController } from './StudentsController';
 import type { StudentsIndex } from './StudentsController';
-import { isCsvFilePathOrThrow, JSONPath } from '../parser/Parser';
-import type { JsonFilePath } from '../parser/Parser';
+import { isCsvFilePathOrThrow, JSONPath } from './../parser/Parser';
+import type { JsonFilePath } from './../parser/Parser';
+import final from './../parser/decorators/final';
 
 
 const studentsController = new StudentsController();
 class App {  
   #result!: { students: StudentsIndex } | { error: "Invalid course weights" }; 
+  @final
   private outputFilePath!: JsonFilePath;
 
   public run(): void {
     this.migrate().then(() => this.render())
+    // Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 100)
   }
 
   public migrate(): Promise<void[]> | never {
@@ -26,7 +29,7 @@ class App {
     marksFilePath = process.argv[5];
     this.outputFilePath = JSONPath(process.argv[6]); // throws if not '*.json' string
     const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow); // can throw 
-    const models = [Course, Student, Test, Mark];
+    const models = [Course, Student, Test, Mark] as const;
     const allModelImports = models.map((model, i) => model.import(paths[i])); 
     return Promise.all(allModelImports); 
   }

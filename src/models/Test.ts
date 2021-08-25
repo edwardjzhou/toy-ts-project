@@ -3,6 +3,8 @@ import { withPrimaryKey } from './BaseRecord';
 import type { CourseRecord } from "./Course";
 import type { MarkRecord } from "./Mark";
 import type { PrimaryKey, ForeignKey } from './schema';
+import final from './../parser/decorators/final';
+
 export interface TestSchema {
   id: PrimaryKey;         // PK
   course_id: ForeignKey;  // FK
@@ -16,6 +18,7 @@ export type TestRecord = TestSchema & TestComputed;
 
 export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
   private _marks: MarkRecord[] = [];
+  @final
   private _course!: CourseRecord; 
   public get marks(): MarkRecord[] {  // Passively wait for marks to join me
     return this._marks;
@@ -32,7 +35,7 @@ export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
   public readonly id: PrimaryKey;
   public readonly course_id: ForeignKey;
   public readonly weight: number;
-  public constructor(id: PrimaryKey, course_id: ForeignKey, weight: number){
+  private constructor(id: PrimaryKey, course_id: ForeignKey, weight: number){
     super();
     this.id = Number(id);
     this.course_id = Number(course_id);

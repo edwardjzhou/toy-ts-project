@@ -1,6 +1,7 @@
 import type { MarkRecord } from './Mark';
 import { withPrimaryKey } from './BaseRecord';
-import type { PrimaryKey , ModelRecord} from './schema';
+import type { PrimaryKey } from './schema';
+
 export interface StudentSchema {
   id: PrimaryKey;
   name: string;
@@ -30,7 +31,7 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
   // read from csv table
   public readonly id: PrimaryKey;
   public readonly name: string;
-  public constructor(id: PrimaryKey, name: string){
+  private constructor(id: PrimaryKey, name: string){
     super();
     this.id = id |= 0; 
     this.name = name;    

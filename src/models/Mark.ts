@@ -4,6 +4,7 @@ import { Student } from './Student';
 import type { StudentRecord } from './Student';
 import { withoutPrimaryKey } from './BaseRecord';
 import type { ForeignKey, Grade } from './schema'
+import final from './../parser/decorators/final';
 
 export interface MarkSchema {
   test_id: ForeignKey;   
@@ -17,8 +18,11 @@ interface MarkComputed {
 }
 export type MarkRecord = MarkSchema & MarkComputed;
 export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord {
+    @final
     private _weightedMark!: number;        // computed for view calculation: mark.test.weight / 100 * mark.mark
+    @final
     private _test!: TestRecord;            // FK association
+    @final
     private _student!: StudentRecord;      // FK association
     public get test(): TestRecord {
       return this._test;
@@ -43,7 +47,7 @@ export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord 
     public readonly test_id: ForeignKey;
     public readonly student_id: ForeignKey;
     public readonly mark: Grade;
-    public constructor(test_id: ForeignKey, student_id: ForeignKey, mark: Grade){
+    private constructor(test_id: ForeignKey, student_id: ForeignKey, mark: Grade){
       super();
       this.test_id = Number(test_id);
       this.student_id = Number(student_id);
