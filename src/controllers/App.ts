@@ -8,6 +8,7 @@ import type { StudentsIndex } from './StudentsController';
 import { isCsvFilePathOrThrow, JSONPath } from '../parser/Parser';
 import type { JsonFilePath } from '../parser/Parser';
 
+
 const studentsController = new StudentsController();
 class App {  
   #result!: { students: StudentsIndex } | { error: "Invalid course weights" }; 
@@ -41,7 +42,7 @@ class App {
         students
       };
     }
-    console.log(Student.all, Mark.all, Test.all, Course.all);
+    // console.log(Student.all, Mark.all, Test.all, Course.all);
     console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
       if (err) throw err

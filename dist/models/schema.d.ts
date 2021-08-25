@@ -11,6 +11,7 @@ export declare type ForeignKey = number;
 export declare type PrimaryKey = number;
 export declare type GradeGrade = `${Exclude<Grade, 100>}.${Grade}` | `${Grade}.${0}`;
 export declare type Model = typeof Student | typeof Test | typeof Mark | typeof Course;
+export declare type ModelRecord = InstanceType<Model>;
 export declare type Record = StudentRecord | TestRecord | MarkRecord | CourseRecord;
 export declare type Schema = StudentSchema | TestSchema | MarkSchema | CourseSchema;
 export declare type ForeignKeyPropNamesInSchema<S extends Schema> = {

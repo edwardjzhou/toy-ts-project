@@ -18,10 +18,10 @@ export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never 
   return true
 }
 
-type header = ConstructorParameters<Model>;
-interface Table<T> {
+type header = string;
+interface ParseResult {
     headers: header[];
-    records: T[]
+    records: string[];
 }
 export class CsvTableParser {
   private model: Model;
@@ -30,14 +30,15 @@ export class CsvTableParser {
   }
   
   @measure
-  public run(filePath: FilePath<Csv>): Promise<Table<Record>>{    
+  public run(filePath: FilePath<Csv>): Promise<ParseResult>{    
     return new Promise(resolve => { 
         fs.readFile(filePath, 'utf8' , (err, rawData) => {
           if (err) throw err;
-          const [ headersArray , rowStringsArray ] = this.read(rawData);
+          const [ headersArray, rowStringsArray ] = this.read(rawData);
           this.clean(rowStringsArray); // mutates rowStringsArray only
-          this.transform(rowStringsArray); // mutates rowStringsArray only
-          const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
+          // this.transform(rowStringsArray); // mutates rowStringsArray only
+          // const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
+          const result = { headers: headersArray, records: rowStringsArray };
           resolve(result);
         })
     })
@@ -68,15 +69,15 @@ export class CsvTableParser {
       StringCleaning.removeSpacesAfterCommasFromStringArray(rowsStringsArray); // mutates
   }
 
-  public transform(rowsStringsArray: string[]): void {
-    this.transformRowStringsToModelObjects(rowsStringsArray);
-  }
-  private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
-    for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
-      //@ts-ignore
-      rowsStringsArray[idx] = new this.model(...rowString.split(','));
-    }
-  }
+  // public transform(rowsStringsArray: string[]): void {
+  //   this.transformRowStringsToModelObjects(rowsStringsArray);
+  // }
+  // private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
+  //   for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
+  //     //@ts-ignore
+  //     rowsStringsArray[idx] = new this.model(...rowString.split(','));
+  //   }
+  // }
 }
 
 export default { CsvTableParser }

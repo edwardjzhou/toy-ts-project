@@ -32,7 +32,7 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
   public readonly name: string;
   public constructor(id: PrimaryKey, name: string){
     super();
-    this.id = id |= 0;
+    this.id = id |= 0; 
     this.name = name;    
   }
 }

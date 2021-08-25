@@ -20,15 +20,8 @@ const withoutPrimaryKey = () => {
 };
 exports.withoutPrimaryKey = withoutPrimaryKey;
 const PK_MODEL_DONE_IMPORTING = Symbol('@@DONE');
-/**
-*
-* @template T extends @type PKedRecord
-* @return df
-*/
+// withPrimaryKey is a factory for static methods that records extend/mix
 const withPrimaryKey = () => {
-    /**
-    * @class {new () => (Anonymous class)} sdf
-    */
     return class {
         static index = new Map();
         static get all() {
@@ -50,7 +43,7 @@ const withPrimaryKey = () => {
         static isLoadedEvent = new events_1.EventEmitter().setMaxListeners(1e3);
         static isLoaded = false;
         /**
-         *  find() is basically an async function.
+         *  (anonymous class).find() is basically an async function.
          *  We write it this way since we need an ordered resolution of promises.
          *  For a model m of models M, m's isLoadedEvent's cb
          *  resolves all associative m.find() promises

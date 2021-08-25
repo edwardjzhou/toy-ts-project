@@ -20,14 +20,6 @@ declare const Student_base: {
     isLoaded: boolean;
     find(id: number): Promise<StudentRecord>;
 };
-/**
- *
- *
- * @export
- * @class Student
- * @extends {withPrimaryKey<StudentRecord>()}
- * @implements {StudentRecord}
- */
 export declare class Student extends Student_base implements StudentRecord {
     private _marks;
     private _totalAverage;

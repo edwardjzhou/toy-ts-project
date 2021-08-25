@@ -11,11 +11,6 @@ export declare const withoutPrimaryKey: <T extends {
     all: T[];
     import(fp: CsvFilePath): Promise<void>;
 };
-/**
-*
-* @template T extends @type PKedRecord
-* @return df
-*/
 export declare const withPrimaryKey: <T extends PKedRecord>() => {
     new (): {};
     index: Map<number, T>;
@@ -24,7 +19,7 @@ export declare const withPrimaryKey: <T extends PKedRecord>() => {
     isLoadedEvent: EventEmitter;
     isLoaded: boolean;
     /**
-     *  find() is basically an async function.
+     *  (anonymous class).find() is basically an async function.
      *  We write it this way since we need an ordered resolution of promises.
      *  For a model m of models M, m's isLoadedEvent's cb
      *  resolves all associative m.find() promises
@@ -53,7 +48,7 @@ declare const _default: {
         isLoadedEvent: EventEmitter;
         isLoaded: boolean;
         /**
-         *  find() is basically an async function.
+         *  (anonymous class).find() is basically an async function.
          *  We write it this way since we need an ordered resolution of promises.
          *  For a model m of models M, m's isLoadedEvent's cb
          *  resolves all associative m.find() promises

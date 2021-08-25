@@ -8,14 +8,14 @@ export declare type JsonFilePath = FilePath<Json>;
 export declare const JSONPath: (path: string) => JsonFilePath;
 export declare const isCsvFilePathOrThrow: (path: string) => path is `${string}.csv`;
 declare type header = string;
-interface Table {
+interface Table<T> {
     headers: header[];
-    records: any[];
+    records: T[];
 }
 export declare class CsvTableParser {
     private model;
     constructor(model: Model);
-    run(filePath: FilePath<Csv>): Promise<Table>;
+    run(filePath: FilePath<Csv>): Promise<Table<any>>;
     read(rawData: string): [header[], string[]];
     private readRows;
     private readHeaders;

@@ -24,9 +24,17 @@ export const withoutPrimaryKey = <T extends NoPKRecord>() => {
   }
 }
 
+
+
+
+
 const PK_MODEL_DONE_IMPORTING: unique symbol = Symbol('@@DONE');
+
+
+
+// withPrimaryKey is a factory for anonymous classes with static methods that a Model inherits
 export const withPrimaryKey = <T extends PKedRecord> () => {
-  return class {
+  return class{
     public static index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static get all(): T[] {
       return [...this.index.values()]
@@ -36,9 +44,15 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
         this.index.set(record.id, record)
       }
     }
+
+    // (anonymous class).import handles importing from csv
+    // (a). app.migrate calls import()
+    // (b). import() creates a parser instance per import
+    // (c). The parser makes model instances and the model sets all 
+    // (d). Declares this model is ready for controller/app views by resolving app.migrate
     public static async import(fp: CsvFilePath): Promise<void>{
       if (this.isLoaded) return void 0;
-      const { headers, records } = await new CsvTableParser(this).run(fp);
+      const { headers, records } = await new CsvTableParser().run(fp);
       this.all = records;
       this.isLoaded = true; 
       this.isLoadedEvent.emit(PK_MODEL_DONE_IMPORTING);
@@ -47,7 +61,7 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
     public static isLoaded: boolean = false;
 
     /**
-     *  (anonymous class).find() is basically an async function.
+     *  (anonymous class).find is basically an async function.
      *  We write it this way since we need an ordered resolution of promises.
      *  For a model m of models M, m's isLoadedEvent's cb
      *  resolves all associative m.find() promises
@@ -65,7 +79,7 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
                 case true: throw Error('relational consistency violated; some FK doesnt map to a record');
                 case false: return new Promise((resolve) => {
                     this.isLoadedEvent.once(PK_MODEL_DONE_IMPORTING, () => {
-                      resolve(<T>this.index.get(id));
+                      resolve (<T>this.index.get(id));
                     })
                 });
               }

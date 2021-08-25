@@ -29,4 +29,6 @@ export type IsPrimaryKeyedSchema<S extends Schema> = S extends { id: PrimaryKey 
 export type PKedRecord = { id: PrimaryKey } & Record;
 export type NoPKRecord = { id?: never } & Schema;
 
+type Exactly<T, U extends T> = {[K in keyof U]: K extends keyof T ? T[K] : never};
+type IsExactly<T, U extends T> = U extends Exactly<T, U> ? true : false;
 
