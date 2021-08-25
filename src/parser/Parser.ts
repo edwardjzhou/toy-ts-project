@@ -23,25 +23,20 @@ interface ParseResult {
     headers: header[];
     records: string[];
 }
-export class CsvTableParser {
-  private model: Model;
-  public constructor(model: Model){
-    this.model = model;
-  }
-  
+export class CsvTableParser {  
   @measure
   public run(filePath: FilePath<Csv>): Promise<ParseResult>{    
-    return new Promise(resolve => { 
-        fs.readFile(filePath, 'utf8' , (err, rawData) => {
-          if (err) throw err;
-          const [ headersArray, rowStringsArray ] = this.read(rawData);
-          this.clean(rowStringsArray); // mutates rowStringsArray only
-          // this.transform(rowStringsArray); // mutates rowStringsArray only
-          // const result = { headers: headersArray, records: rowStringsArray as unknown as Record[] };
-          const result = { headers: headersArray, records: rowStringsArray };
-          resolve(result);
-        })
-    })
+
+    
+    // return new Promise(resolve => { 
+    //     fs.readFile(filePath, 'utf8' , (err, rawData) => {
+    //       if (err) throw err;
+    //       const [ headersArray, rowStringsArray ] = this.read(rawData);
+    //       this.clean(rowStringsArray); // mutates rowStringsArray only
+    //       const result = { headers: headersArray, records: rowStringsArray };
+    //       resolve(result);
+    //     })
+    // })
   }
 
   public read(rawData: string): [header[], string[]] {
@@ -68,16 +63,6 @@ export class CsvTableParser {
       StringCleaning.removeEmptyStringsFromStringArray(rowsStringsArray); // mutates
       StringCleaning.removeSpacesAfterCommasFromStringArray(rowsStringsArray); // mutates
   }
-
-  // public transform(rowsStringsArray: string[]): void {
-  //   this.transformRowStringsToModelObjects(rowsStringsArray);
-  // }
-  // private transformRowStringsToModelObjects(rowsStringsArray: string[]): void { // mutates array
-  //   for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
-  //     //@ts-ignore
-  //     rowsStringsArray[idx] = new this.model(...rowString.split(','));
-  //   }
-  // }
 }
 
 export default { CsvTableParser }

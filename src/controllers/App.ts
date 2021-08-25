@@ -24,11 +24,11 @@ class App {
     studentsFilePath = process.argv[3],
     testsFilePath = process.argv[4],
     marksFilePath = process.argv[5];
-    this.outputFilePath = JSONPath(process.argv[6]); // can throw
-    const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow); // can throw
+    this.outputFilePath = JSONPath(process.argv[6]); // throws on non .json string
+    const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow); // can throw 
     const models = [Course, Student, Test, Mark];
-    const allLoads = models.map((model, i) => model.import(paths[i])); 
-    return Promise.all(allLoads); 
+    const allModelImports = models.map((model, i) => model.import(paths[i])); 
+    return Promise.all(allModelImports); 
   }
 
   public render(): void {
@@ -45,6 +45,7 @@ class App {
     // console.log(Student.all, Mark.all, Test.all, Course.all);
     console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
+      err  =  new Error()
       if (err) throw err
     });
   }
