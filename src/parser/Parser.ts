@@ -18,7 +18,7 @@ export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never 
   return true
 }
 
-type header = string;
+type header = ConstructorParameters<Model>;
 interface Table<T> {
     headers: header[];
     records: T[]

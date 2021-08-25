@@ -26,7 +26,7 @@ export const withoutPrimaryKey = <T extends NoPKRecord>() => {
 
 const PK_MODEL_DONE_IMPORTING: unique symbol = Symbol('@@DONE');
 export const withPrimaryKey = <T extends PKedRecord> () => {
-  return class ASDF{
+  return class {
     public static index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static get all(): T[] {
       return [...this.index.values()]

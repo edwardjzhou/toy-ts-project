@@ -19,7 +19,7 @@ export type PrimaryKey = number;
 // couldnt figure out how to map string literals union type to number literals union type...
 export type GradeGrade = `${Exclude<Grade, 100>}.${Grade}` | `${Grade}.${0}`
 export type Model = typeof Student | typeof Test | typeof Mark | typeof Course;
-export type ModelRecord = Student | Test | Mark | Course;
+export type ModelRecord = InstanceType<Model>;
 export type Record = StudentRecord | TestRecord | MarkRecord | CourseRecord;
 export type Schema = StudentSchema | TestSchema | MarkSchema | CourseSchema;
 export type ForeignKeyPropNamesInSchema<S extends Schema> = {
@@ -28,3 +28,5 @@ export type ForeignKeyPropNamesInSchema<S extends Schema> = {
 export type IsPrimaryKeyedSchema<S extends Schema> = S extends { id: PrimaryKey } ? true : false;
 export type PKedRecord = { id: PrimaryKey } & Record;
 export type NoPKRecord = { id?: never } & Schema;
+
+
