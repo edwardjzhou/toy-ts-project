@@ -2,7 +2,8 @@ declare class App {
     #private;
     private outputFilePath;
     run(): void;
-    migrate(): Promise<void[]>;
+    migrate(): Promise<void[]> | never;
     render(): void;
 }
-export default App;
+declare const _default: App;
+export default _default;

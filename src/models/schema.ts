@@ -1,12 +1,12 @@
 
 import { Course } from './Course';
-import type { CourseSchema } from './Course';
+import type { CourseSchema, CourseRecord } from './Course';
 import { Mark } from './Mark';
-import type { MarkSchema } from './Mark';
+import type { MarkSchema, MarkRecord } from './Mark';
 import { Student } from './Student';
-import type { StudentSchema } from './Student';
+import type { StudentSchema, StudentRecord } from './Student';
 import { Test } from './Test';
-import type { TestSchema } from './Test';
+import type { TestSchema, TestRecord } from './Test';
 
 // literal type
 export type Grade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 
@@ -19,11 +19,12 @@ export type PrimaryKey = number;
 // couldnt figure out how to map string literals union type to number literals union type...
 export type GradeGrade = `${Exclude<Grade, 100>}.${Grade}` | `${Grade}.${0}`
 export type Model = typeof Student | typeof Test | typeof Mark | typeof Course;
-export type Record = Student | Test | Mark | Course;
+export type ModelRecord = Student | Test | Mark | Course;
+export type Record = StudentRecord | TestRecord | MarkRecord | CourseRecord;
 export type Schema = StudentSchema | TestSchema | MarkSchema | CourseSchema;
 export type ForeignKeyPropNamesInSchema<S extends Schema> = {
   [P in keyof S]: P extends `${string}_id` ? P : never
 }[keyof S];
 export type IsPrimaryKeyedSchema<S extends Schema> = S extends { id: PrimaryKey } ? true : false;
-export type PKSchema = { id: PrimaryKey } & Schema;
-export type NotPrimaryKeyedSchema = { id?: never } & Schema;
+export type PKedRecord = { id: PrimaryKey } & Record;
+export type NoPKRecord = { id?: never } & Schema;

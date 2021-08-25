@@ -1,6 +1,6 @@
 import type { MarkRecord } from './Mark';
 import { withPrimaryKey } from './BaseRecord';
-import type { PrimaryKey } from './schema';
+import type { PrimaryKey , ModelRecord} from './schema';
 export interface StudentSchema {
   id: PrimaryKey;
   name: string;
@@ -10,6 +10,7 @@ interface StudentComputed {
   totalAverage: number;   // computed for view (rounded to 2 decimals)
 }
 export type StudentRecord = StudentSchema & StudentComputed;
+
 export class Student extends withPrimaryKey<StudentRecord>() implements StudentRecord {
   // accessors to joins and computed values; dependent on other tables
   private _marks: MarkRecord[] = [];    // has-many
@@ -31,8 +32,11 @@ export class Student extends withPrimaryKey<StudentRecord>() implements StudentR
   public readonly name: string;
   public constructor(id: PrimaryKey, name: string){
     super();
-    this.id = Number(id);
+    this.id = id |= 0;
     this.name = name;    
   }
 }
 export default Student 
+
+
+

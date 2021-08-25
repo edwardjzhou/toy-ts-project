@@ -20,8 +20,25 @@ const withoutPrimaryKey = () => {
 };
 exports.withoutPrimaryKey = withoutPrimaryKey;
 const PK_MODEL_DONE_IMPORTING = Symbol('@@DONE');
+/**
+*
+* @template T extends @type PKedRecord
+* @return df
+*/
 const withPrimaryKey = () => {
+    /**
+    * @class {new () => (Anonymous class)} sdf
+    */
     return class {
+        static index = new Map();
+        static get all() {
+            return [...this.index.values()];
+        }
+        static set all(records) {
+            for (const record of records) {
+                this.index.set(record.id, record);
+            }
+        }
         static async import(fp) {
             if (this.isLoaded)
                 return void 0;
@@ -32,21 +49,17 @@ const withPrimaryKey = () => {
         }
         static isLoadedEvent = new events_1.EventEmitter().setMaxListeners(1e3);
         static isLoaded = false;
-        static index = new Map();
-        static get all() {
-            return [...this.index.values()];
-        }
-        static set all(records) {
-            for (const record of records) {
-                this.index.set(record.id, record);
-            }
-        }
-        // find() is basically an async function.
-        // We write it this way since we need an ordered resolution of promises.
-        // For a model m of models M, m's isLoadedEvent's cb
-        // resolves all associative m.find() promises
-        // before the m.import() promise resolves, 
-        // and thus all records are whole before Promise.all(for m in M m.import()) resolves.
+        /**
+         *  find() is basically an async function.
+         *  We write it this way since we need an ordered resolution of promises.
+         *  For a model m of models M, m's isLoadedEvent's cb
+         *  resolves all associative m.find() promises
+         *  before the m.import() promise resolves,
+         *  and thus all records are whole before Promise.all(for m in M m.import()) resolves.
+         * @static
+         * @param id
+         * @returns {(Promise<T> | never)}
+         */
         static find(id) {
             switch (this.index.has(id)) {
                 case true: return Promise.resolve(this.index.get(id));

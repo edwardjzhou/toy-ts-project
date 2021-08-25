@@ -1,5 +1,4 @@
 import { BaseController } from "./BaseController";
-import { Student } from './../models/Student';
 import type { StudentRecord } from './../models/Student';
 declare type StudentsShow = {
     id: number;
@@ -17,7 +16,7 @@ export declare type StudentsIndex = {
         courseAverage: number;
     }[];
 }[];
-export declare class StudentsController extends BaseController<Student> {
+export declare class StudentsController extends BaseController<StudentRecord> {
     index(): StudentsIndex;
     show({ id, name, totalAverage }: StudentRecord): StudentsShow;
     update(): void;

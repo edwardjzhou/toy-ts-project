@@ -2,6 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Student = void 0;
 const BaseRecord_1 = require("./BaseRecord");
+/**
+ *
+ *
+ * @export
+ * @class Student
+ * @extends {withPrimaryKey<StudentRecord>()}
+ * @implements {StudentRecord}
+ */
 class Student extends BaseRecord_1.withPrimaryKey() {
     // accessors to joins and computed values; dependent on other tables
     _marks = []; // has-many
@@ -23,7 +31,7 @@ class Student extends BaseRecord_1.withPrimaryKey() {
     name;
     constructor(id, name) {
         super();
-        this.id = Number(id);
+        this.id = id |= 0;
         this.name = name;
     }
 }

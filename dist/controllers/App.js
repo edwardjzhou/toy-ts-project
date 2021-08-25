@@ -47,4 +47,4 @@ class App {
         });
     }
 }
-exports.default = App;
+exports.default = new App();

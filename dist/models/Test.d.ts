@@ -15,11 +15,11 @@ interface TestComputed {
 export declare type TestRecord = TestSchema & TestComputed;
 declare const Test_base: {
     new (): {};
+    index: Map<number, TestRecord>;
+    all: TestRecord[];
     import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");
     isLoaded: boolean;
-    index: Map<number, TestRecord>;
-    all: TestRecord[];
     find(id: number): Promise<TestRecord>;
 };
 export declare class Test extends Test_base implements TestRecord {

@@ -2,7 +2,7 @@ import fs from 'fs';
 import { measure } from './decorators/measure';
 import { StringCleaning } from './modules/StringCleaning';
 import { AppFileTypes } from './namespaces/AppFileTypes';
-import type { Model, Record } from './../models/schema';
+import type { Model, Record, ModelRecord } from './../models/schema';
 
 type Csv = typeof AppFileTypes.csv;
 type Json = typeof AppFileTypes.json;
@@ -17,12 +17,12 @@ export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never 
   if (path.slice(path.length - 4) !== '.csv') throw TypeError('args must end in .csv')
   return true
 }
-type header = string;
-interface Table {
-    headers: header[];
-    records: any[];
-}
 
+type header = string;
+interface Table<T> {
+    headers: header[];
+    records: T[]
+}
 export class CsvTableParser {
   private model: Model;
   public constructor(model: Model){
@@ -30,7 +30,7 @@ export class CsvTableParser {
   }
   
   @measure
-  public run(filePath: FilePath<Csv>): Promise<Table>{    
+  public run(filePath: FilePath<Csv>): Promise<Table<Record>>{    
     return new Promise(resolve => { 
         fs.readFile(filePath, 'utf8' , (err, rawData) => {
           if (err) throw err;

@@ -9,6 +9,7 @@ export interface MarkSchema {
 interface MarkComputed {
     test: TestRecord;
     student: StudentRecord;
+    weightedMark: number;
 }
 export declare type MarkRecord = MarkSchema & MarkComputed;
 declare const Mark_base: {

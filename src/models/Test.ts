@@ -13,6 +13,7 @@ interface TestComputed {
   course: CourseRecord;         // belongs_to_one course
 }
 export type TestRecord = TestSchema & TestComputed;
+
 export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
   private _marks: MarkRecord[] = [];
   private _course!: CourseRecord; 

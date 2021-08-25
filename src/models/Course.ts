@@ -11,6 +11,7 @@ interface CourseComputed {
     totalWeight: number;    // computed for validation with Course.tests
 }
 export type CourseRecord = CourseSchema & CourseComputed;
+
 export class Course extends withPrimaryKey<CourseRecord>() implements CourseRecord {
   private _tests: Test[] = [];        // has_many
   private _totalWeight!: number;      // computed for validating 

@@ -14,11 +14,11 @@ interface CourseComputed {
 export declare type CourseRecord = CourseSchema & CourseComputed;
 declare const Course_base: {
     new (): {};
+    index: Map<number, CourseRecord>;
+    all: CourseRecord[];
     import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");
     isLoaded: boolean;
-    index: Map<number, CourseRecord>;
-    all: CourseRecord[];
     find(id: number): Promise<CourseRecord>;
 };
 export declare class Course extends Course_base implements CourseRecord {
