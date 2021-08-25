@@ -14,7 +14,7 @@ interface CourseComputed {
 export declare type CourseRecord = CourseSchema & CourseComputed;
 declare const Course_base: {
     new (): {};
-    index: Map<number, CourseRecord>;
+    index: Map<number, any>;
     all: CourseRecord[];
     import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");

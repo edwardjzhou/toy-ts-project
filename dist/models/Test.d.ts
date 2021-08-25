@@ -15,7 +15,7 @@ interface TestComputed {
 export declare type TestRecord = TestSchema & TestComputed;
 declare const Test_base: {
     new (): {};
-    index: Map<number, TestRecord>;
+    index: Map<number, any>;
     all: TestRecord[];
     import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");

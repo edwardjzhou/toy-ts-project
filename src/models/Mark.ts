@@ -48,7 +48,7 @@ export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord 
       this.test_id = Number(test_id);
       this.student_id = Number(student_id);
       this.mark = <Grade>Number(mark);
-      if (this.mark > 100 || this.mark < 0) throw TypeError('a mark expects a mark between 0 and 100')
+      if (mark > 100 || mark < 0) throw TypeError('a mark expects a mark between 0 and 100')
       Test.find(this.test_id).then(foundTest => {
         foundTest.marks = [...foundTest.marks, this];
         this.test = foundTest;

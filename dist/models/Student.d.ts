@@ -13,7 +13,7 @@ interface StudentComputed {
 export declare type StudentRecord = StudentSchema & StudentComputed;
 declare const Student_base: {
     new (): {};
-    index: Map<number, StudentRecord>;
+    index: Map<number, any>;
     all: StudentRecord[];
     import(fp: `${string}.csv`): Promise<void>;
     isLoadedEvent: import("node:events");

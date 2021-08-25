@@ -11,8 +11,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CsvTableParser = exports.isCsvFilePathOrThrow = exports.JSONPath = void 0;
 const fs_1 = __importDefault(require("fs"));
+const readline_1 = __importDefault(require("readline"));
 const measure_1 = require("./decorators/measure");
-const StringCleaning_1 = require("./modules/StringCleaning");
 const JSONPath = (path) => {
     if (path.slice(path.length - 5) !== '.json')
         throw TypeError('output arg must end in .json');
@@ -26,58 +26,15 @@ const isCsvFilePathOrThrow = (path) => {
 };
 exports.isCsvFilePathOrThrow = isCsvFilePathOrThrow;
 class CsvTableParser {
-    model;
-    constructor(model) {
-        this.model = model;
-    }
-    run(filePath) {
-        return new Promise(resolve => {
-            fs_1.default.readFile(filePath, 'utf8', (err, rawData) => {
-                if (err)
-                    throw err;
-                const [headersArray, rowStringsArray] = this.read(rawData);
-                this.clean(rowStringsArray); // mutates rowStringsArray only
-                this.transform(rowStringsArray); // mutates rowStringsArray only
-                const result = { headers: headersArray, records: rowStringsArray };
-                resolve(result);
-            });
+    static create(fp) {
+        return readline_1.default.createInterface({
+            input: fs_1.default.createReadStream(fp),
+            crlfDelay: Infinity
         });
-    }
-    read(rawData) {
-        const headersArray = this.readHeaders(rawData);
-        const rowStringsArray = this.readRows(rawData);
-        return [headersArray, rowStringsArray];
-    }
-    readRows(rawData) {
-        const splitByLine = rawData.split('\n');
-        const rowStringsArray = splitByLine.slice(1);
-        return rowStringsArray;
-    }
-    readHeaders(rawData) {
-        const splitByLine = rawData.split('\n');
-        const headersString = splitByLine[0];
-        const headersArray = headersString.split(',');
-        return headersArray;
-    }
-    clean(rowsStringsArray) {
-        this.cleanRowStrings(rowsStringsArray);
-    }
-    cleanRowStrings(rowsStringsArray) {
-        StringCleaning_1.StringCleaning.removeEmptyStringsFromStringArray(rowsStringsArray); // mutates
-        StringCleaning_1.StringCleaning.removeSpacesAfterCommasFromStringArray(rowsStringsArray); // mutates
-    }
-    transform(rowsStringsArray) {
-        this.transformRowStringsToModelObjects(rowsStringsArray);
-    }
-    transformRowStringsToModelObjects(rowsStringsArray) {
-        for (const [idx, rowString] of Object.entries(rowsStringsArray)) {
-            //@ts-ignore
-            rowsStringsArray[idx] = new this.model(...rowString.split(','));
-        }
     }
 }
 __decorate([
     measure_1.measure
-], CsvTableParser.prototype, "run", null);
+], CsvTableParser, "create", null);
 exports.CsvTableParser = CsvTableParser;
 exports.default = { CsvTableParser };

@@ -13,14 +13,19 @@ export declare const withoutPrimaryKey: <T extends {
 };
 export declare const withPrimaryKey: <T extends PKedRecord>() => {
     new (): {};
-    index: Map<number, T>;
+    index: Map<PrimaryKey, any>;
     all: T[];
     import(fp: CsvFilePath): Promise<void>;
     isLoadedEvent: EventEmitter;
     isLoaded: boolean;
     /**
-     *  (anonymous class).find() is basically an async function.
-     *  We write it this way since we need an ordered resolution of promises.
+     *  (anonymous class).find is an async function in disguise
+     *  We want:
+     *  1. ordered resolution 2. no passing a cb
+     *  for (1) we have to use events
+     *  for (2) we have to use promises
+     *  So we chose to return a promise that is resolved by a listener invocation,
+     *  rather than by another promise (which would result in unordered resolutions)
      *  For a model m of models M, m's isLoadedEvent's cb
      *  resolves all associative m.find() promises
      *  before the m.import() promise resolves,
@@ -42,14 +47,19 @@ declare const _default: {
     };
     withPrimaryKey: <T_1 extends PKedRecord>() => {
         new (): {};
-        index: Map<number, T_1>;
+        index: Map<number, any>;
         all: T_1[];
         import(fp: `${string}.csv`): Promise<void>;
         isLoadedEvent: EventEmitter;
         isLoaded: boolean;
         /**
-         *  (anonymous class).find() is basically an async function.
-         *  We write it this way since we need an ordered resolution of promises.
+         *  (anonymous class).find is an async function in disguise
+         *  We want:
+         *  1. ordered resolution 2. no passing a cb
+         *  for (1) we have to use events
+         *  for (2) we have to use promises
+         *  So we chose to return a promise that is resolved by a listener invocation,
+         *  rather than by another promise (which would result in unordered resolutions)
          *  For a model m of models M, m's isLoadedEvent's cb
          *  resolves all associative m.find() promises
          *  before the m.import() promise resolves,

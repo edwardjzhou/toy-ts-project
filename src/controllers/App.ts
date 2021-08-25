@@ -24,7 +24,7 @@ class App {
     studentsFilePath = process.argv[3],
     testsFilePath = process.argv[4],
     marksFilePath = process.argv[5];
-    this.outputFilePath = JSONPath(process.argv[6]); // throws on non .json string
+    this.outputFilePath = JSONPath(process.argv[6]); // throws if not '*.json' string
     const paths = [coursesFilePath, studentsFilePath, testsFilePath, marksFilePath].filter(isCsvFilePathOrThrow); // can throw 
     const models = [Course, Student, Test, Mark];
     const allModelImports = models.map((model, i) => model.import(paths[i])); 
@@ -45,7 +45,6 @@ class App {
     // console.log(Student.all, Mark.all, Test.all, Course.all);
     console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
-      err  =  new Error()
       if (err) throw err
     });
   }
