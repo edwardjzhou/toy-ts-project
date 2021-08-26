@@ -19,7 +19,7 @@ export const isCsvFilePathOrThrow = (path: string): path is CsvFilePath | never 
   return true
 }
 export class CsvTableParser {  
-  public static create(fp: FilePath<Csv>): any {    
+  public static create(fp: FilePath<Csv>) {    
     return readline.createInterface({
       input: fs.createReadStream(fp),
       crlfDelay: Infinity

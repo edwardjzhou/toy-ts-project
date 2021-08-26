@@ -41,7 +41,6 @@ export const withoutPrimaryKey = <T extends NoPKRecord>() => {
   }
 }
 
-
 const PK_MODEL_DONE_IMPORTING: unique symbol = Symbol('@@DONE');
 // withPrimaryKey is a factory for utility classes that each Model inherits 
 export const withPrimaryKey = <T extends PKedRecord> () => {
@@ -79,7 +78,7 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
      *  for (a) we have to use events
      *  for (b) we have to use promises
      *  So we chose to return a promise that is resolved by a listener invocation,
-     *  rather than by another promise (which would result, in our case, in out of order resolution)
+     *  rather than by another promise (which would result, in our case, in an undesired order of resolution)
      */
     public static async find(id: PrimaryKey): Promise<T> | never {
       switch(this.index.has(id)) {

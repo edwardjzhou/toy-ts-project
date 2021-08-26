@@ -9,19 +9,20 @@ import { isCsvFilePathOrThrow, JSONPath } from './../parser/Parser';
 import type { JsonFilePath } from './../parser/Parser';
 import final from './../parser/decorators/final';
 
-
 const studentsController = new StudentsController();
 class App {  
-  #result!: { students: StudentsIndex } | { error: "Invalid course weights" }; 
+  #result?: { students: StudentsIndex } | { error: "Invalid course weights" }; 
   @final
   private outputFilePath!: JsonFilePath;
+  private static readonly singleton: App = new App();
+  public static readonly getSingleton = () => this.singleton;
+  private constructor(){}
 
   public run(): void {
     this.migrate().then(() => this.render())
-    // Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 100)
   }
 
-  public migrate(): Promise<void[]> | never {
+  private migrate(): Promise<void[]> | never {
     if (process.argv.length < 7) throw Error('need course, student, test, mark, and output args');
     const coursesFilePath = process.argv[2],
     studentsFilePath = process.argv[3],
@@ -34,7 +35,7 @@ class App {
     return Promise.all(allModelImports); 
   }
 
-  public render(): void {
+  private render(): void {
     if (!Course.areTestWeightsValid()) {
       this.#result = {
           "error": "Invalid course weights"
@@ -46,7 +47,7 @@ class App {
       };
     }
     // console.log(Student.all, Mark.all, Test.all, Course.all);
-    console.log(JSON.stringify(this.#result, null, 2))
+    // console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
       if (err) throw err
     });
@@ -54,4 +55,4 @@ class App {
     
 }
 
-export default new App();
+export default App.getSingleton();
