@@ -13,23 +13,23 @@ interface CourseComputed {
 export type CourseRecord = CourseSchema & CourseComputed;
 
 export class Course extends withPrimaryKey<CourseRecord>() implements CourseRecord {
-  #_tests: Test[] = [];        // has_many
-  #_totalWeight!: number;      // computed for validating 
+  private _tests: Test[] = [];        // has_many
+  private _totalWeight!: number;      // computed for validating 
   public get tests(): Test[] {
-    return this.#_tests;
+    return this._tests;
   }
   public set tests(tests: Test[]) {
-    this.#_tests = tests;
+    this._tests = tests;
     // below: calculating totalWeight since it only depends on tests
     let cumWeight = 0; 
     for (const test of tests) cumWeight += test.weight;
     this.totalWeight = cumWeight;
   }
   public get totalWeight(): number {
-    return this.#_totalWeight;
+    return this._totalWeight;
   }
   private set totalWeight(value: number) {
-    this.#_totalWeight = value;
+    this._totalWeight = value;
   }
   public readonly id: PrimaryKey; 
   public readonly name: string;

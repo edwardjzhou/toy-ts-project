@@ -16,14 +16,17 @@ class BaseRecord {
   @measure
   public static async import(fp: CsvFilePath): Promise<void> {
     const reader = CsvTableParser.create(fp);
-    const records = []
-    let count = 0
+    const records = [];
+    let count = 0;
     for await (const row of reader) {
-      if(count++ === 0) continue
-      // @ts-ignore
-      records.push(new this(...row.split(',')) )
+      if(count++ === 0) continue;
+      if (this.length === row.split(',').length) {
+        // @ts-ignore
+        records.push(new this(...row.split(',')));
+      }
     }
-    this.all = records
+  
+    this.all = records;
   }
 }
 
@@ -36,7 +39,7 @@ export const withoutPrimaryKey = <T extends NoPKRecord>() => {
     public static override set all(records: T[]) {
       if (Array.isArray(records))
       this.index = records;
-      else this.index.push(records)
+      else this.index.push(records);
     }
   }
 }
@@ -47,25 +50,25 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
   return class extends BaseRecord {
     private static index: Map<PrimaryKey, T> = new Map<PrimaryKey, T>()
     public static override get all(): T[] {
-      return [...this.index.values()]
+      return [...this.index.values()];
     }
     private static override set all(records: T[]) {
       for (const record of records) {
-        this.index.set(record.id, record)
+        this.index.set(record.id, record);
       }
     }
 
     /** 
     * (anonymous class).import handles importing from csv 
-    * app.migrate calls this.import on a Model class
+    * (1). app.migrate calls model.import on every model
     * @see {CsvTableParser.create} (2). import creates a line-reader from CsvTableParser.create 
-    * (3). The line-reader makes model instances who try to @see {find} associations
-    * (4). The model sets @see {all} and @see {isLoadedEvent} emits when line-reader finishes
+    * (3). The line-reader instantiates model instances who try to @see {find} associations
+    * (4). The model sets @see {all} and emits @see {isLoadedEvent} when line-reader finishes
     * (5). The model is ready for app controllers and helps resolve app.migrate
     */
     public static override async import(fp: CsvFilePath): Promise<void>{
       if (this.isLoaded) return void 0;
-      await super.import(fp)
+      await super.import(fp);
       this.isLoaded = true; 
       this.isLoadedEvent.emit(PK_MODEL_DONE_IMPORTING);
     }
@@ -87,8 +90,8 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
           switch(this.isLoaded) {
             case true: throw Error('relational consistency violated; some FK doesnt map to a record');
             case false: return await new Promise(resolve => {
-              this.isLoadedEvent.on(PK_MODEL_DONE_IMPORTING, () => resolve(this.index.get(id)!) )
-            })
+              this.isLoadedEvent.on(PK_MODEL_DONE_IMPORTING, () => resolve(this.index.get(id)!));
+            });
           }
       }
     }

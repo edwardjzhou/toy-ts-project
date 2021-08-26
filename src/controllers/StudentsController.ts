@@ -1,6 +1,6 @@
 import { BaseController } from "./BaseController";
-import { Student } from './../models/Student'
-import type { StudentRecord } from './../models/Student'
+import { Student } from './../models/Student';
+import type { StudentRecord } from './../models/Student';
 import CoursesController from './CoursesController';
 
 type StudentsShow = {
@@ -17,20 +17,22 @@ export type StudentsIndex = {
     name: string;
     teacher: string;
     courseAverage: number;
-  }[]
+  }[];
 }[];
-const coursesController = new CoursesController()
+const coursesController = new CoursesController();
 export class StudentsController extends BaseController<StudentRecord> {
   public index(): StudentsIndex {
-    const index = []
+    const index = [];
     const students = Student.all.sort((a,b) => a.id > b.id ? 1: (a.id < b.id ? -1: 0));
     for (const student of students) {
       const courseAverages = [];
-      const courses = coursesController.index(student)
+      const courses = coursesController.index(student);
       for (const course of courses){
-        courseAverages.push(course.courseAverage)
+        courseAverages.push(course.courseAverage);
       }
-      student.totalAverage = Math.round(courseAverages.reduce((acc, ele) => acc + ele) / courseAverages.length * 100) / 100
+
+      const sumAverages = courseAverages.reduce((acc, ele) => acc + ele, 0)
+      student.totalAverage = Math.round( sumAverages / courseAverages.length * 100) / 100;
       index.push({
         ...this.show(student),
         courses

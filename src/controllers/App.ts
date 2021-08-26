@@ -19,7 +19,7 @@ class App {
   private constructor(){}
 
   public run(): void {
-    this.migrate().then(() => this.render())
+    this.migrate().then(() => this.render());
   }
 
   private migrate(): Promise<void[]> | never {
@@ -46,10 +46,10 @@ class App {
         students
       };
     }
-    // console.log(Student.all, Mark.all, Test.all, Course.all);
-    // console.log(JSON.stringify(this.#result, null, 2))
+    console.log(Student.all, Mark.all, Test.all, Course.all);
+    console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
-      if (err) throw err
+      if (err) throw err;
     });
   }
     

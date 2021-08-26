@@ -1,4 +1,4 @@
-import { BaseController } from "./BaseController";
+import { BaseController } from './BaseController';
 import type { CourseRecord, CourseSchema } from '../models/Course';
 import type { MarkRecord } from '../models/Mark';
 import type { StudentRecord } from '../models/Student';
