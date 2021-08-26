@@ -41,13 +41,8 @@ export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
     this.course_id = Number(course_id);
     this.weight = Number(weight);
     Course.find(this.course_id).then(foundCourse => {
-      try {
-      // console.log(foundCourse)
       foundCourse.tests = [...foundCourse.tests, this];
       this.course = foundCourse;
-      }catch{
-        console.log(this)
-      }
     });
   }
 }

@@ -46,8 +46,8 @@ class App {
         students
       };
     }
-    console.log(Student.all, Mark.all, Test.all, Course.all);
-    console.log(JSON.stringify(this.#result, null, 2))
+    // console.log(Student.all, Mark.all, Test.all, Course.all);
+    // console.log(JSON.stringify(this.#result, null, 2))
     fs.writeFile(this.outputFilePath, JSON.stringify(this.#result, null, 2), (err) => {
       if (err) throw err;
     });
