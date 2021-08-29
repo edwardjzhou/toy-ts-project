@@ -30,6 +30,7 @@ class BaseRecord {
   }
 }
 
+
 export const withoutPrimaryKey = <T extends NoPKRecord>() => {
   return class extends BaseRecord {
     private static index: T[] = [];
