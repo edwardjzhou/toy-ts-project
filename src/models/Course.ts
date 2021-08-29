@@ -1,5 +1,5 @@
-import { Test } from "./Test";
 import { withPrimaryKey } from "./BaseRecord";
+import type { TestRecord } from "./Test";
 import type { PrimaryKey } from "./schema";
 export interface CourseSchema {
   id: PrimaryKey;
@@ -7,21 +7,20 @@ export interface CourseSchema {
   teacher: string;
 }
 interface CourseComputed {
-  tests: Test[]; // has_many tests
+  tests: TestRecord[]; // has_many tests
   totalWeight: number; // computed for validation with Course.tests
 }
 export type CourseRecord = CourseSchema & CourseComputed;
 
-export class Course extends withPrimaryKey<CourseRecord>()
-  implements CourseRecord {
-  private _tests: Test[] = []; // has_many
+export class Course extends withPrimaryKey<CourseRecord>() implements CourseRecord {
+  private _tests: TestRecord[] = []; // has_many
   private _totalWeight!: number; // computed for validating
-  public get tests(): Test[] {
+  public get tests(): TestRecord[] {
     return this._tests;
   }
-  public set tests(tests: Test[]) {
+  public set tests(tests: TestRecord[]) {
     this._tests = tests;
-    // below: calculating totalWeight since it only depends on tests
+    // also calculate totalWeight since it only depends on tests
     let cumWeight = 0;
     for (const test of tests) cumWeight += test.weight;
     this.totalWeight = cumWeight;

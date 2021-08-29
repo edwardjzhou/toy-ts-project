@@ -1,17 +1,14 @@
-import { EventEmitter } from 'events'
+import { EventEmitter, once } from 'events'
 import { CsvTableParser } from './../parser/Parser'
 import type { CsvFilePath } from './../parser/Parser'
 import type { 
   PrimaryKey, NoPKRecord, PKedRecord
 } from './schema';
 import measure from './../parser/decorators/measure';
-import final from './../parser/decorators/final';
-
-declare module 'node:events'
+declare module 'node:events';
 
 class BaseRecord {
-  @final
-  protected static all: any[]
+  protected static all: any[];
   
   @measure
   public static async import(fp: CsvFilePath): Promise<void> {
@@ -19,17 +16,15 @@ class BaseRecord {
     const records = [];
     let count = 0;
     for await (const row of reader) {
-      if(count++ === 0) continue;
+      if (count++ === 0) continue;
       if (this.length === row.split(',').length) {
         // @ts-ignore
         records.push(new this(...row.split(',')));
       }
     }
-  
     this.all = records;
   }
 }
-
 
 export const withoutPrimaryKey = <T extends NoPKRecord>() => {
   return class extends BaseRecord {
@@ -38,8 +33,7 @@ export const withoutPrimaryKey = <T extends NoPKRecord>() => {
       return this.index;
     }
     public static override set all(records: T[]) {
-      if (Array.isArray(records))
-      this.index = records;
+      if (Array.isArray(records)) this.index = records;
       else this.index.push(records);
     }
   }
@@ -65,7 +59,7 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
     * @see {CsvTableParser.create} (2). import creates a line-reader from CsvTableParser.create 
     * (3). The line-reader instantiates model instances who try to @see {find} associations
     * (4). The model sets @see {all} and emits @see {isLoadedEvent} when line-reader finishes
-    * (5). The model is ready for app controllers and helps resolve app.migrate
+    * (5). The model is ready for app controllers
     */
     public static override async import(fp: CsvFilePath): Promise<void>{
       if (this.isLoaded) return void 0;
@@ -77,12 +71,7 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
     private static isLoaded: boolean = false;
 
     /**
-     *  @see {find} (anonymous class).find 
-     *  we wanted:  a. ordered resolution b. not having to pass a cb param
-     *  for (a) we have to use events
-     *  for (b) we have to use promises
-     *  So we chose to return a promise that is resolved by a listener invocation,
-     *  rather than by another promise (which would result, in our case, in an undesired order of resolution)
+     *  (anonymous class).find 
      */
     public static async find(id: PrimaryKey): Promise<T> | never {
       switch(this.index.has(id)) {
@@ -90,9 +79,10 @@ export const withPrimaryKey = <T extends PKedRecord> () => {
         case false: 
           switch(this.isLoaded) {
             case true: throw Error('relational consistency violated; some FK doesnt map to a record');
-            case false: return await new Promise(resolve => {
-              this.isLoadedEvent.on(PK_MODEL_DONE_IMPORTING, () => resolve(this.index.get(id)!));
-            });
+            case false: {
+              await once(this.isLoadedEvent, PK_MODEL_DONE_IMPORTING) 
+              return this.index.get(id)!
+            }
           }
       }
     }

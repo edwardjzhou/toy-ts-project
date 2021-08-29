@@ -18,8 +18,7 @@ export type TestRecord = TestSchema & TestComputed;
 
 export class Test extends withPrimaryKey<TestRecord>() implements TestRecord {
   private _marks: MarkRecord[] = [];
-  @final
-  private _course!: CourseRecord;
+  @final private _course!: CourseRecord;
   public get marks(): MarkRecord[] {
     // Passively wait for marks to join me
     return this._marks;

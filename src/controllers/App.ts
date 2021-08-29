@@ -12,14 +12,13 @@ import final from "./../parser/decorators/final";
 const studentsController = new StudentsController();
 class App {
   #result?: { students: StudentsIndex } | { error: "Invalid course weights" };
-  @final
-  private outputFilePath!: JsonFilePath;
-  private static readonly singleton: App = new App();
+  @final private outputFilePath!: JsonFilePath;
+  @final private static readonly singleton: App = new App();
   public static readonly getSingleton = () => this.singleton;
   private constructor() {}
 
   public run(): void {
-    this.migrate().then(() => this.render());
+    this.migrate().then(() => process.nextTick(() => this.render()));
   }
 
   private migrate(): Promise<void[]> | never {
@@ -53,7 +52,7 @@ class App {
       };
     }
     // console.log(Student.all, Mark.all, Test.all, Course.all);
-    // console.log(JSON.stringify(this.#result, null, 2))
+    // console.log(JSON.stringify(this.#result, null, 2));
     fs.writeFile(
       this.outputFilePath,
       JSON.stringify(this.#result, null, 2),

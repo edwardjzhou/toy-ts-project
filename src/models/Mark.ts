@@ -17,14 +17,10 @@ interface MarkComputed {
   weightedMark: number; // computed
 }
 export type MarkRecord = MarkSchema & MarkComputed;
-export class Mark extends withoutPrimaryKey<MarkRecord>()
-  implements MarkRecord {
-  @final
-  private _weightedMark!: number; // computed for view calculation: mark.test.weight / 100 * mark.mark
-  @final
-  private _test!: TestRecord; // FK association
-  @final
-  private _student!: StudentRecord; // FK association
+export class Mark extends withoutPrimaryKey<MarkRecord>() implements MarkRecord {
+  @final private _weightedMark!: number; // computed for view calculation: mark.test.weight / 100 * mark.mark
+  @final private _test!: TestRecord; // FK association
+  @final private _student!: StudentRecord; // FK association
   public get test(): TestRecord {
     return this._test;
   }
@@ -69,5 +65,4 @@ export class Mark extends withoutPrimaryKey<MarkRecord>()
     });
   }
 }
-
 export default Mark;

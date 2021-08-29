@@ -7,9 +7,6 @@
     "outDir": "dist",
     "baseUrl": "src",
     "experimentalDecorators": true,
-    "paths": {
-      "model/*": ["./model/*"]
-    },
     "moduleResolution": "node",
     "pretty": true,
     "noEmit": false,

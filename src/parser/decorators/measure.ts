@@ -11,11 +11,10 @@ export const measure = (
     const start = performance.now();
     const result = originalMethod.apply(this, args);
     const finish = performance.now();
-    // console.log(`Execution time: ${finish - start} milliseconds`);
+    console.log(`Execution time: ${finish - start} milliseconds`);
     return result;
   };
 
   return descriptor;
 };
-
 export default measure;

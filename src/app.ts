@@ -8,5 +8,4 @@
 
 import app from "./controllers/App";
 
-const principalsApp = app;
-principalsApp.run();
+app.run();
